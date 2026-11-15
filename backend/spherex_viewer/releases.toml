@@ -1,0 +1,20 @@
+# SPHEREx data release registry overrides.
+#
+# Collections are discovered automatically from IRSA (spherex.obscore), so a new
+# release normally needs NO change here. Use this file only to relabel, hide, or
+# reprioritise collections. Collection names follow spherex_<release>[_<variant>].
+#
+# priority: when two releases contain the same (obs_id, detector), the higher
+# priority wins. If unset, DR releases outrank QR releases, and higher numbers win.
+
+[hide]
+collections = ["spherex_dr1_cal"]          # calibration files, not sky images
+
+[labels]
+spherex_dr1 = "DR1 (wide)"
+spherex_dr1_deep = "DR1 (deep fields)"
+spherex_qr3 = "QR3 (wide)"
+spherex_qr3_deep = "QR3 (deep fields)"
+
+# [priority]
+# spherex_qr4 = 50

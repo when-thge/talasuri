@@ -1,0 +1,29 @@
+# local toolchains and environments
+.venv/
+.tools/
+.env
+.env.*
+
+# build output and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-tests/
+
+# run output: logs and the server pid; the acceptance JSON results are kept
+results/*.log
+results/*.pid
+
+# design-tool working state (screenshots, caches, remote project ids)
+.impeccable/review/
+.impeccable/hook.cache.json
+.superdesign/
+
+# editor and OS clutter
+.Rhistory
+.DS_Store
+.idea/
+.vscode/

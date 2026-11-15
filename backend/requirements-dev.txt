@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8
+pytest-asyncio>=0.24
+playwright>=1.45   # screenshots (scripts/screenshots.py)
+scikit-learn>=1.5   # training the mover classifier only (spherex_viewer.train_movers)
+reproject>=0.14    # reference implementation for the reprojection equivalence test

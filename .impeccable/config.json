@@ -1,0 +1,35 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/star-atlas.html"
+        ],
+        "createdAt": "2026-11-15T06:35:52.973Z",
+        "reason": "agent: spent decision sketch, not shipped; shipped rail/plot text is >=11px"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/ephemeris.html"
+        ],
+        "createdAt": "2026-11-15T06:35:52.980Z",
+        "reason": "agent: spent decision sketch of the unchosen direction, not shipped"
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "frontend/src/app.css"
+        ],
+        "createdAt": "2026-11-15T06:59:57.923Z",
+        "reason": "user confirmed: picked 'Richer navy depth' with a faint chart grid behind the viewport (a chart surface) on 2026-11-15"
+      }
+    ]
+  }
+}

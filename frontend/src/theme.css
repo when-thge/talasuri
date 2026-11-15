@@ -1,0 +1,153 @@
+/* Talasuri design system: "Star atlas". Every colour, font, radius and timing used by the
+ * interface is a custom property defined here; app.css only lays things out.
+ * The world: a printed star-atlas plate read under a red night-vision torch. Chart navy
+ * ground, chalk ink, hairline rules, and one red that marks only what you can act on, the
+ * current selection and the target.
+ * Rule for the science views: images are shown exactly as rendered by the backend (neutral
+ * grey ramp, no tint, no filter, no blend mode). Nothing in this file styles their pixels. */
+:root {
+  /* chart ground: one tonal ramp, darkest to lightest */
+  --ink-0: #0a1220;                      /* deepest: dialogs' backdrop, plot wells */
+  --ink-1: #0d1626;                      /* page ground */
+  --ink-2: #111d31;                      /* panels */
+  --ink-3: #17253d;                      /* raised: hover, selected rail item */
+  --ink-4: #22314a;                      /* hairline rules */
+  --ink-5: #3a4b66;                      /* strong rules, axes, control borders on hover */
+  --stage: #000;                         /* behind science images: plain black */
+  /* chalk text (all >= 4.5:1 on --ink-2) */
+  --text: #e9eef5;
+  --text-2: #a9b6c9;
+  --text-3: #8a98ae;
+  /* the one accent: night-vision red, for actions, selection and the target only */
+  --red: #ff5a4e;
+  --red-strong: #ff7468;                 /* hover on red */
+  --red-ink: #1a0c0a;                    /* text on red */
+  --red-wash: rgba(255, 90, 78, .14);
+  /* semantic */
+  --amber: #f2b544;                      /* warnings and flags */
+  --danger: #ff8a80;
+  /* data series (plots): chalk-blue ordinal ramp, earliest = deepest */
+  --series-0: #4f79b8;
+  --series-1: #8fb3e8;
+  --series-2: #e9eef5;
+  /* type */
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-name: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-xs: .75rem;   /* 12 */
+  --fs-sm: .8125rem; /* 13 */
+  --fs-md: .875rem;  /* 14 */
+  --fs-lg: 1rem;     /* 16 */
+  --fs-xl: 1.5rem;   /* 24 */
+  --fs-plate: 2rem;  /* 32: the atlas-plate name */
+  /* shape and motion */
+  --radius: 8px;
+  --radius-sm: 6px;
+  --fast: 150ms;
+  --slow: 240ms;
+  --ease: cubic-bezier(.16, 1, .3, 1);   /* exponential ease-out */
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; color: var(--text); font: var(--fs-md)/1.45 var(--font-body); background: var(--ink-1); }
+[hidden] { display: none !important; }
+
+/* type */
+h1, h2, h3 { margin: 0; font-weight: 600; }
+h2 { font-size: var(--fs-lg); color: var(--text); }
+h3 { font-size: var(--fs-md); color: var(--text); }
+h3 small { font-weight: 400; font-size: var(--fs-xs); color: var(--text-3); }
+small, .hint { color: var(--text-2); }
+.hint { margin: 2px 0 8px; font-size: var(--fs-sm); line-height: 1.5; }
+.mono, code, kbd, pre, input[type="number"], input[type="date"] { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.name { font-family: var(--font-name); font-style: italic; font-weight: 500; }
+a { color: var(--text); text-decoration: underline; text-decoration-color: var(--ink-5); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--text-2); }
+.warn { color: var(--amber); }
+.flagged { color: var(--amber); }
+
+/* controls: standard web controls on the chart ground */
+input, select, button, textarea {
+  font: inherit; color: var(--text); background: var(--ink-1); border: 1px solid var(--ink-4);
+  border-radius: var(--radius-sm); padding: 5px 8px;
+  transition: border-color var(--fast), background-color var(--fast), color var(--fast);
+}
+input[type="checkbox"] { accent-color: var(--red); padding: 0; width: 15px; height: 15px; vertical-align: -2px; }
+input[type="range"] { accent-color: var(--red); padding: 0; border: 0; background: transparent; }
+input::placeholder, textarea::placeholder { color: var(--text-3); }
+select:hover, input:hover, textarea:hover { border-color: var(--ink-5); }
+button { cursor: pointer; padding: 6px 12px; background: var(--ink-2); font-weight: 500; }
+button:hover { background: var(--ink-3); border-color: var(--ink-5); }
+button:active { background: var(--ink-4); }
+button:disabled { opacity: .4; cursor: default; background: var(--ink-2); }
+button.primary { background: var(--red); border-color: var(--red); color: var(--red-ink); font-weight: 600; }
+button.primary:hover { background: var(--red-strong); border-color: var(--red-strong); }
+button.ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+button.ghost:hover { background: var(--ink-3); color: var(--text); }
+button.icon { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; }
+button svg, a svg { display: block; flex: none; }
+button[aria-pressed="true"] { background: var(--red-wash); border-color: var(--red); color: var(--text); }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+::selection { background: rgba(255, 90, 78, .35); color: var(--text); }
+* { scrollbar-width: thin; scrollbar-color: var(--ink-5) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--ink-5); border: 3px solid var(--ink-2); border-radius: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* panels: flat, separated from the ground by a hairline only */
+.panel { position: relative; background: var(--ink-2); }
+
+/* collapsible section */
+details.sec { border-top: 1px solid var(--ink-4); }
+details.sec > summary {
+  cursor: pointer; list-style: none; padding: 11px 2px; display: flex; align-items: baseline; gap: 8px;
+  font-size: var(--fs-md); font-weight: 500; color: var(--text);
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after {
+  content: ""; margin-left: auto; align-self: center; flex: none; width: 7px; height: 7px;
+  border: solid var(--text-3); border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg); transition: transform var(--fast) var(--ease);
+}
+details.sec[open] > summary::after { transform: rotate(45deg); }
+details.sec > summary .sum {
+  min-width: 0; margin-left: auto; font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 400;
+  color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%;
+}
+details.sec > summary:has(.sum)::after { margin-left: 10px; }
+details.sec[open] > summary .sum { display: none; }
+details.sec[open] > summary:has(.sum)::after { margin-left: auto; }
+details.sec > :last-child { margin-bottom: 14px; }
+
+/* readouts drawn over a science view (one corner only; the image itself is untouched) */
+.readout {
+  font-family: var(--font-mono); font-size: var(--fs-xs); line-height: 1.35; color: var(--text);
+  background: rgba(0, 0, 0, .62); border-radius: 4px; padding: 4px 8px;
+}
+.readout b { color: var(--text); font-weight: 500; }
+.badge {
+  font-size: var(--fs-xs); font-weight: 500; color: var(--amber);
+  border: 1px solid var(--amber); border-radius: 999px; padding: 2px 9px; background: rgba(13, 22, 38, .85);
+}
+.chip { display: inline-block; font-family: var(--font-mono); font-size: var(--fs-xs); border: 1px solid var(--ink-4); border-radius: 4px; padding: 1px 7px; margin: 0 4px 4px 0; color: var(--text-2); }
+.chip.bad { color: var(--amber); border-color: var(--amber); }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--c); vertical-align: middle; }
+
+/* dialogs */
+dialog {
+  color: var(--text); background: var(--ink-2); border: 1px solid var(--ink-4); border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .55); padding: 0; max-width: min(920px, 94vw); max-height: 88vh;
+}
+dialog[open] { animation: rise var(--slow) var(--ease); }
+dialog::backdrop { background: rgba(5, 9, 17, .72); }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[open] { animation: none; }
+  * { transition-duration: 0s !important; }
+  .spinner { animation: none !important; }
+}
+details.sec > summary .sum.warn { color: var(--amber); }
+#sum-flags { font-family: var(--font-body); font-size: var(--fs-sm); }

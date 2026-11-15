@@ -1,0 +1,19 @@
+services:
+  spherex-flipbook:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - spherex-cache:/cache          # cutouts, SIA results, catalogs (safe to delete)
+    environment:
+      SPX_CUTOUT_SOURCE: "auto"       # S3 byte ranges, IBE fallback (or "s3" / "ibe")
+      SPX_S3_CONCURRENCY: "128"       # parallel S3 range requests
+      SPX_FETCH_CONCURRENCY: "8"      # IBE: IRSA throttles (HTTP 503) at ~16 parallel cutouts
+      SPX_FETCH_TIMEOUT_S: "90"
+      SPX_REGISTRY_REFRESH_S: "21600" # re-check IRSA for new collections every 6 h
+      SPX_MAX_FOV_ARCMIN: "30"
+      # SPX_RELEASES_FILE: /config/releases.toml   # optional overrides, see README
+    restart: unless-stopped
+
+volumes:
+  spherex-cache:

@@ -1,0 +1,249 @@
+{
+ "barnard": {
+  "target": "barnard",
+  "query": "Barnard's Star",
+  "resolved": {
+   "ra": 269.4520769586187,
+   "dec": 4.69336496657667,
+   "pmra": -801.551,
+   "pmdec": 10362.394,
+   "epoch": 2000.0,
+   "name": "NAME Barnard's star",
+   "source": "sesame"
+  },
+  "fov_arcmin": 5.0,
+  "center": [
+   269.44622221128606,
+   4.768800923681197
+  ],
+  "state": "done",
+  "message": "Loaded 355/358 frames; 3 failed",
+  "errors": [],
+  "n_observations": 358,
+  "n_loaded": 355,
+  "n_failed": 3,
+  "elapsed_s": 248.2,
+  "alignment": {
+   "n": 1662,
+   "rms_px": 0.20442806374475261,
+   "median_px": 0.05000426581690951,
+   "p95_px": 0.13704484890700466,
+   "max_px": 2.7408602768715657
+  },
+  "spectrum": {
+   "n_points": 355,
+   "n_good": 0,
+   "lam_range_um": null,
+   "per_detector": {}
+  },
+  "detectors": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "mjd_range": [
+   60902.865380738,
+   61305.628686814
+  ],
+  "pass": false
+ },
+ "epsindib": {
+  "target": "epsindib",
+  "query": "eps Indi B",
+  "resolved": {
+   "ra": 331.04414658852124,
+   "dec": -56.78284419511611,
+   "pmra": 3981.977,
+   "pmdec": -2466.832,
+   "epoch": 2000.0,
+   "name": "* eps Ind B",
+   "source": "sesame"
+  },
+  "fov_arcmin": 5.0,
+  "center": [
+   331.09620699901717,
+   -56.800511949013334
+  ],
+  "state": "done",
+  "message": "Loaded 456/458 frames; 2 failed",
+  "errors": [],
+  "n_observations": 458,
+  "n_loaded": 456,
+  "n_failed": 2,
+  "elapsed_s": 296.1,
+  "alignment": {
+   "n": 1433,
+   "rms_px": 0.4086265853443234,
+   "median_px": 0.06664668227972133,
+   "p95_px": 0.6348004247026066,
+   "max_px": 3.0228420607737143
+  },
+  "spectrum": {
+   "n_points": 456,
+   "n_good": 353,
+   "lam_range_um": [
+    0.7499570437402168,
+    5.011126709858814
+   ],
+   "per_detector": {
+    "D1": {
+     "n": 39,
+     "median_flux_ujy": 2110.576617592156,
+     "median_snr": 25.90507674548676
+    },
+    "D2": {
+     "n": 67,
+     "median_flux_ujy": 17482.943747295878,
+     "median_snr": 117.16791406351392
+    },
+    "D3": {
+     "n": 81,
+     "median_flux_ujy": 17434.69026371154,
+     "median_snr": 123.5916579923328
+    },
+    "D4": {
+     "n": 32,
+     "median_flux_ujy": 12074.450785834464,
+     "median_snr": 105.26148358465767
+    },
+    "D5": {
+     "n": 63,
+     "median_flux_ujy": 49795.52276903563,
+     "median_snr": 124.28945484280133
+    },
+    "D6": {
+     "n": 71,
+     "median_flux_ujy": 19600.96170691629,
+     "median_snr": 59.43922207047892
+    }
+   }
+  },
+  "detectors": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "mjd_range": [
+   60789.85618796,
+   61315.478741768
+  ],
+  "pass": true
+ },
+ "rwaur": {
+  "target": "rwaur",
+  "query": "RW Aur",
+  "resolved": {
+   "ra": 76.95652603458,
+   "dec": 30.40143817389,
+   "pmra": 7.23,
+   "pmdec": -20.33,
+   "epoch": 2000.0,
+   "name": "V* RW Aur",
+   "source": "sesame"
+  },
+  "fov_arcmin": 5.0,
+  "center": [
+   76.95652603458,
+   30.40143817389
+  ],
+  "state": "done",
+  "message": "Loaded 335/335 frames",
+  "errors": [],
+  "n_observations": 335,
+  "n_loaded": 335,
+  "n_failed": 0,
+  "elapsed_s": 256.0,
+  "alignment": {
+   "n": 1362,
+   "rms_px": 0.3062384047337761,
+   "median_px": 0.054331660943575895,
+   "p95_px": 0.2049989077698063,
+   "max_px": 2.946628662169764
+  },
+  "spectrum": {
+   "n_points": 335,
+   "n_good": 18,
+   "lam_range_um": [
+    0.7408711179624946,
+    1.0939684377350176
+   ],
+   "per_detector": {
+    "D1": {
+     "n": 18,
+     "median_flux_ujy": 150064.7162127071,
+     "median_snr": 338.24473358210525
+    }
+   }
+  },
+  "detectors": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "mjd_range": [
+   60919.420312786,
+   61299.896562983
+  ],
+  "pass": true
+ },
+ "rdra": {
+  "target": "rdra",
+  "query": "R Dra",
+  "resolved": {
+   "ra": 248.16761083295,
+   "dec": 66.75497941722,
+   "pmra": -20.643,
+   "pmdec": 6.149,
+   "epoch": 2000.0,
+   "name": "V* R Dra",
+   "source": "sesame"
+  },
+  "fov_arcmin": 5.0,
+  "center": [
+   248.16761083295,
+   66.75497941722
+  ],
+  "state": "done",
+  "message": "Loaded 535/539 frames; 4 failed",
+  "errors": [],
+  "n_observations": 539,
+  "n_loaded": 535,
+  "n_failed": 4,
+  "elapsed_s": 267.3,
+  "alignment": {
+   "n": 2452,
+   "rms_px": 1.4033601589615525,
+   "median_px": 1.264244874184817,
+   "p95_px": 2.1081910418590883,
+   "max_px": 2.8050182387185676
+  },
+  "spectrum": {
+   "n_points": 535,
+   "n_good": 0,
+   "lam_range_um": null,
+   "per_detector": {}
+  },
+  "detectors": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "mjd_range": [
+   60811.956495321,
+   61237.873900124
+  ],
+  "pass": false
+ }
+}

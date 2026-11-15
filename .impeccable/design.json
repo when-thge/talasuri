@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T12:00:00Z",
+  "title": "Design System: Talasuri",
+  "extensions": {
+    "colorMeta": {
+      "ink-0": { "role": "neutral", "displayName": "Plot Well", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "ink-1": { "role": "neutral", "displayName": "Chart Navy", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "ink-2": { "role": "neutral", "displayName": "Panel Navy", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "ink-3": { "role": "neutral", "displayName": "Raised Navy", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "ink-4": { "role": "neutral", "displayName": "Hairline", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "ink-5": { "role": "neutral", "displayName": "Strong Rule", "tonalRamp": ["#0a1220", "#0d1626", "#111d31", "#17253d", "#22314a", "#3a4b66", "#8a98ae", "#e9eef5"] },
+      "stage": { "role": "neutral", "displayName": "Black Stage" },
+      "text": { "role": "neutral", "displayName": "Chalk", "tonalRamp": ["#3a4b66", "#5a6a82", "#7a889e", "#8a98ae", "#a9b6c9", "#c4cedb", "#d9e0ea", "#e9eef5"] },
+      "text-2": { "role": "neutral", "displayName": "Chalk Dim", "tonalRamp": ["#3a4b66", "#5a6a82", "#7a889e", "#8a98ae", "#a9b6c9", "#c4cedb", "#d9e0ea", "#e9eef5"] },
+      "text-3": { "role": "neutral", "displayName": "Chalk Faint", "tonalRamp": ["#3a4b66", "#5a6a82", "#7a889e", "#8a98ae", "#a9b6c9", "#c4cedb", "#d9e0ea", "#e9eef5"] },
+      "red": { "role": "primary", "displayName": "Night-Vision Red", "tonalRamp": ["#1a0c0a", "#4a1712", "#8a2219", "#d92d20", "#ff5a4e", "#ff7468", "#ffa59d", "#ffd6d2"] },
+      "red-strong": { "role": "primary", "displayName": "Torch Red" },
+      "red-ink": { "role": "primary", "displayName": "Ember Black" },
+      "red-wash": { "role": "primary", "displayName": "Red Wash" },
+      "amber": { "role": "tertiary", "displayName": "Flag Amber", "tonalRamp": ["#2a1d05", "#5a3e0b", "#8a5f12", "#b25e00", "#d99a2b", "#f2b544", "#f7cf82", "#fbe8c1"] },
+      "danger": { "role": "tertiary", "displayName": "Error Coral" },
+      "series-0": { "role": "secondary", "displayName": "Epoch Blue (earliest)", "tonalRamp": ["#3f69a8", "#4f79b8", "#6189c6", "#7499d3", "#8fb3e8", "#adc7ee", "#cbdbf3", "#e9eef5"] },
+      "series-1": { "role": "secondary", "displayName": "Epoch Blue (middle)", "tonalRamp": ["#3f69a8", "#4f79b8", "#6189c6", "#7499d3", "#8fb3e8", "#adc7ee", "#cbdbf3", "#e9eef5"] },
+      "series-2": { "role": "secondary", "displayName": "Epoch Chalk (latest)", "tonalRamp": ["#3f69a8", "#4f79b8", "#6189c6", "#7499d3", "#8fb3e8", "#adc7ee", "#cbdbf3", "#e9eef5"] }
+    },
+    "typographyMeta": {
+      "plate": { "displayName": "Plate", "purpose": "Object names only: the atlas-plate target label, example targets, the title-screen name." },
+      "headline": { "displayName": "Headline", "purpose": "Panel and dialog headings, state-card heads." },
+      "title": { "displayName": "Title", "purpose": "Section summaries, plot titles, buttons." },
+      "body": { "displayName": "Body", "purpose": "Default interface text." },
+      "hint": { "displayName": "Hint", "purpose": "Explanatory hints, option rows, segmented controls." },
+      "label": { "displayName": "Label", "purpose": "Sub-section labels, badges, captions, status." },
+      "figure": { "displayName": "Figure", "purpose": "Every coordinate, date, flux and count, in tabular figures." }
+    },
+    "dataColors": {
+      "detectors": { "D1": "#a78bfa", "D2": "#60a5fa", "D3": "#4de3ff", "D4": "#5eead4", "D5": "#ffb547", "D6": "#ff7a59", "mixed": "#9fb0d0", "purpose": "Wavelength-ordered key for interface marks only (timeline ticks, detector checklist); never applied to images." },
+      "overlays": { "gaia": "#86b6ef", "catwise": "#ffb547", "galacticPlaneAndPrediction": "#b79cff", "ecliptic": "#f2b544", "purpose": "Catalogue and reference marks drawn on the sky views." },
+      "invertedSky": { "target": "#d92d20", "targetFlagged": "#b25e00", "moverStrong": "#2f5ea8", "moverWeak": "#5b6b8c", "prediction": "#6d3fd6", "purpose": "Deeper variants used when the sky is shown inverted (white)." },
+      "plotRamp": ["#3f69a8", "#4f79b8", "#6189c6", "#7499d3", "#8fb3e8", "#adc7ee", "#cbdbf3", "#e9eef5"],
+      "plotInk": { "grid": "rgba(169,182,201,.12)", "errorBar": "#7d8ba1" }
+    },
+    "shadows": [
+      { "name": "dialog-lift", "value": "0 24px 64px rgba(0, 0, 0, .55)", "purpose": "Modal dialogs, over a rgba(5, 9, 17, .72) backdrop." },
+      { "name": "dropdown-lift", "value": "0 16px 40px rgba(0, 0, 0, .5)", "purpose": "Search suggestion list." },
+      { "name": "sheet-lift", "value": "0 -16px 40px rgba(0, 0, 0, .45)", "purpose": "Mobile bottom sheets." },
+      { "name": "focus-ring", "value": "outline: 2px solid var(--red); outline-offset: 2px", "purpose": "Keyboard focus on every control." }
+    ],
+    "motion": [
+      { "name": "fast", "value": "150ms", "purpose": "Border, background and colour transitions on controls; chevron rotation." },
+      { "name": "slow", "value": "240ms", "purpose": "Dialog rise, bottom-sheet slide, title-screen exit, progress line." },
+      { "name": "ease", "value": "cubic-bezier(.16, 1, .3, 1)", "purpose": "Exponential ease-out for every movement." },
+      { "name": "rise", "value": "from { opacity: 0; transform: translateY(8px) }", "purpose": "Dialog entrance; removed under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "laptop", "value": "1280px" },
+      { "name": "narrow", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "The default instrument key on the chart ground.",
+      "html": "<button class=\"ds-btn\">Diff</button>",
+      "css": ".ds-btn { font: 500 0.875rem/1.45 'Public Sans', system-ui, sans-serif; color: #e9eef5; background: #111d31; border: 1px solid #22314a; border-radius: 6px; padding: 6px 12px; cursor: pointer; transition: border-color 150ms, background-color 150ms, color 150ms; } .ds-btn:hover { background: #17253d; border-color: #3a4b66; } .ds-btn:active { background: #22314a; } .ds-btn:focus-visible { outline: 2px solid #ff5a4e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action that moves the story forward: play, Go, the first action in a group.",
+      "html": "<button class=\"ds-btn-primary\">Go</button>",
+      "css": ".ds-btn-primary { font: 600 0.875rem/1.45 'Public Sans', system-ui, sans-serif; color: #1a0c0a; background: #ff5a4e; border: 1px solid #ff5a4e; border-radius: 6px; padding: 6px 12px; cursor: pointer; transition: border-color 150ms, background-color 150ms; } .ds-btn-primary:hover { background: #ff7468; border-color: #ff7468; } .ds-btn-primary:focus-visible { outline: 2px solid #ff5a4e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Toggle Button",
+      "kind": "button",
+      "refersTo": "button-toggled",
+      "description": "A pressed toggle: red wash with a red outline.",
+      "html": "<button class=\"ds-btn-toggle\" aria-pressed=\"true\">Diff</button>",
+      "css": ".ds-btn-toggle { font: 500 0.875rem/1.45 'Public Sans', system-ui, sans-serif; color: #e9eef5; background: rgba(255, 90, 78, .14); border: 1px solid #ff5a4e; border-radius: 6px; padding: 6px 12px; cursor: pointer; } .ds-btn-toggle:focus-visible { outline: 2px solid #ff5a4e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search",
+      "description": "The centred header search, mono input inside an 8px combo.",
+      "html": "<label class=\"ds-search\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input placeholder=\"Object name or RA Dec\" value=\"WISE 0855-0714\"></label>",
+      "css": ".ds-search { display: flex; align-items: center; height: 36px; width: 360px; background: #111d31; border: 1px solid #22314a; border-radius: 8px; color: #8a98ae; padding-left: 12px; transition: border-color 150ms; } .ds-search:hover { border-color: #3a4b66; } .ds-search:focus-within { border-color: #8a98ae; } .ds-search input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; padding: 0 8px; color: #e9eef5; font: 0.8125rem 'JetBrains Mono', ui-monospace, monospace; outline: none; } .ds-search input::placeholder { color: #8a98ae; }"
+    },
+    {
+      "name": "Header Tabs",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Text-only mode tabs with a 2px chalk underline on the selected tab.",
+      "html": "<nav class=\"ds-tabs\"><button>Basic</button><button aria-selected=\"true\">Advanced</button><button>Movers</button></nav>",
+      "css": ".ds-tabs { display: flex; gap: 22px; height: 56px; background: #0d1626; border-bottom: 1px solid #22314a; padding: 0 20px; } .ds-tabs button { border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; padding: 0; color: #a9b6c9; font: 500 0.875rem 'Public Sans', system-ui, sans-serif; cursor: pointer; transition: color 150ms; } .ds-tabs button:hover { color: #e9eef5; } .ds-tabs button[aria-selected=\"true\"] { color: #e9eef5; border-bottom-color: #e9eef5; } .ds-tabs button:focus-visible { outline: 2px solid #ff5a4e; outline-offset: 2px; }"
+    },
+    {
+      "name": "View Switch",
+      "kind": "nav",
+      "refersTo": "segmented",
+      "description": "Segmented tray for Flipbook / Sky Sphere / Aladin.",
+      "html": "<div class=\"ds-seg\"><button aria-selected=\"true\">Flipbook</button><button>Sky Sphere</button><button>Aladin</button></div>",
+      "css": ".ds-seg { display: inline-flex; background: #111d31; border: 1px solid #22314a; border-radius: 8px; padding: 3px; } .ds-seg button { border: 0; background: none; color: #a9b6c9; padding: 5px 13px; border-radius: 6px; font: 500 0.8125rem 'Public Sans', system-ui, sans-serif; cursor: pointer; transition: color 150ms, background-color 150ms; } .ds-seg button:hover { color: #e9eef5; } .ds-seg button[aria-selected=\"true\"] { background: #17253d; color: #e9eef5; } .ds-seg button:focus-visible { outline: 2px solid #ff5a4e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Chips and Flag Badge",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Mono hairline chips; amber pill for a flag.",
+      "html": "<span class=\"ds-chip\">D5</span><span class=\"ds-chip ds-chip-bad\">flagged</span><span class=\"ds-badge\">1 flag at target</span>",
+      "css": ".ds-chip { display: inline-block; font: 0.75rem 'JetBrains Mono', ui-monospace, monospace; border: 1px solid #22314a; border-radius: 4px; padding: 1px 7px; margin: 0 4px 4px 0; color: #a9b6c9; } .ds-chip-bad { color: #f2b544; border-color: #f2b544; } .ds-badge { font: 500 0.75rem 'Public Sans', system-ui, sans-serif; color: #f2b544; border: 1px solid #f2b544; border-radius: 999px; padding: 2px 9px; background: rgba(13, 22, 38, .85); }"
+    },
+    {
+      "name": "Atlas-Plate Label",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Signature: the target named like an atlas plate, italic serif over mono coordinates.",
+      "html": "<div class=\"ds-plate\"><h1>WISE 0855-0714</h1><div>RA 08:55:10.8 · Dec -07:14:43 · 5′ field</div></div>",
+      "css": ".ds-plate { background: #0d1626; padding: 18px 28px; } .ds-plate h1 { margin: 0; color: #e9eef5; font: italic 500 2rem/1.05 'Source Serif 4', Georgia, serif; letter-spacing: -.01em; } .ds-plate div { margin-top: 5px; color: #a9b6c9; font: 0.75rem 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Collapsible Section",
+      "kind": "card",
+      "refersTo": "",
+      "description": "Hairline-divided measurement row with a mono summary and a thin chevron.",
+      "html": "<details class=\"ds-sec\"><summary>Flags <span class=\"ds-sum\">1 flag at target</span></summary><p>Frame flags at the target pixel.</p></details>",
+      "css": ".ds-sec { border-top: 1px solid #22314a; border-bottom: 1px solid #22314a; width: 300px; background: #111d31; color: #e9eef5; font: 0.875rem/1.45 'Public Sans', system-ui, sans-serif; } .ds-sec > summary { cursor: pointer; list-style: none; padding: 11px 2px; display: flex; align-items: baseline; gap: 8px; font-weight: 500; } .ds-sec > summary::-webkit-details-marker { display: none; } .ds-sec > summary::after { content: ''; margin-left: 10px; align-self: center; width: 7px; height: 7px; border: solid #8a98ae; border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg); transition: transform 150ms cubic-bezier(.16, 1, .3, 1); } .ds-sec[open] > summary::after { transform: rotate(45deg); } .ds-sum { margin-left: auto; font: 400 0.75rem 'JetBrains Mono', ui-monospace, monospace; color: #f2b544; } .ds-sec[open] .ds-sum { display: none; } .ds-sec p { margin: 0 2px 14px; color: #a9b6c9; }"
+    },
+    {
+      "name": "Stage Readout",
+      "kind": "custom",
+      "refersTo": "readout",
+      "description": "The single corner readout on the black stage: scale bar and orientation.",
+      "html": "<div class=\"ds-stage\"><div class=\"ds-readout\"><span class=\"ds-scale\"><i></i>30″</span><br>N ↑ E ←</div></div>",
+      "css": ".ds-stage { position: relative; width: 320px; height: 160px; background: #000; border-radius: 6px; } .ds-readout { position: absolute; right: 10px; bottom: 10px; text-align: right; font: 0.75rem/1.35 'JetBrains Mono', ui-monospace, monospace; color: #e9eef5; background: #0a1220; border: 1px solid #22314a; border-radius: 4px; padding: 5px 9px; } .ds-scale { display: inline-flex; align-items: center; gap: 6px; } .ds-scale i { display: block; width: 72px; height: 6px; border: 1.5px solid #e9eef5; border-top: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Star-Atlas Plate",
+    "overview": "The interface is a printed star-atlas plate read under a red night-vision torch. The sky image owns the screen; everything else is quiet chart furniture: a chart-navy ground in one fixed tonal ramp, chalk text, 1px hairline rules, and a single night-vision red that marks only what you can act on, the current selection, and the target. The target is labelled the way an atlas labels a plate: its name in an italic serif, its coordinates in tabular mono beneath.\n\nDensity is working-instrument density. Panels are flat and separated from the ground by hairlines, never boxed or carded; settings sit behind a labelled icon rail, measurements in one right-hand column, and the only scrolling regions are the side panels. Type is small and sentence case throughout, with numbers always in tabular mono so columns of coordinates and fluxes align.\n\nScience images are shown exactly as the backend renders them: neutral grey ramp, no tint, no filter, no blend mode, on a plain black stage. The system styles the furniture around the pixels and never the pixels. It rejects the category default of a glowing neon HUD console with boxed panels on every side.",
+    "keyCharacteristics": [
+      "One tonal ramp of chart navy (ink-0 to ink-5) carries every surface, rule and hover.",
+      "One accent, night-vision red, reserved for primary actions, the current selection and the target ring.",
+      "Amber means a flag or warning and nothing else.",
+      "Italic serif for object names only; Public Sans for the interface; JetBrains Mono tabular figures for every number.",
+      "Hairlines, not boxes; flat panels, shadows only on things that float.",
+      "Untinted science imagery on a black stage."
+    ],
+    "rules": [
+      { "name": "The Torch Rule", "body": "Red marks only what you can act on, the current selection and the target. Never use it for decoration, headings, status or data series.", "section": "colors" },
+      { "name": "The One Ramp Rule", "body": "Every surface, rule and hover state is a step on the ink ramp. A new surface picks an existing step; it does not mix a new navy.", "section": "colors" },
+      { "name": "The Untinted Sky Rule", "body": "Nothing in the system touches science-image pixels: no tint, filter, blend mode or colour overlay. Marks are drawn on top as thin strokes; readouts sit in one corner.", "section": "colors" },
+      { "name": "The Named-Object Rule", "body": "The italic serif is for the names of celestial objects (and the product name on the title screen). It never sets interface labels, headings or numbers.", "section": "typography" },
+      { "name": "The Tabular Figures Rule", "body": "Every coordinate, date, flux and count is set in the mono with tabular numerals.", "section": "typography" },
+      { "name": "The Sentence-Case Rule", "body": "Interface text is sentence case at normal tracking. Labels are not uppercased or letterspaced, and nothing is labelled twice.", "section": "typography" },
+      { "name": "The Hairline Rule", "body": "Structure is drawn with 1px Hairline rules. Panels are not boxed, carded or shadowed; if it does not float, it has no shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep red to primary actions, the current selection and the target ring (The Torch Rule).",
+      "Do take every surface and rule from the ink ramp, ink-0 to ink-5.",
+      "Do show science images untinted on the black stage, with marks drawn on top as 1.5px strokes.",
+      "Do set object names in Source Serif 4 italic and every number in JetBrains Mono tabular figures.",
+      "Do separate panels with 1px Hairline rules and keep them flat.",
+      "Do use amber only for flags and warnings.",
+      "Do honour reduced motion: dialogs stop rising and transitions drop to zero."
+    ],
+    "donts": [
+      "Don't tint, filter, blend or recolour science-image pixels.",
+      "Don't build a glowing neon HUD: no glows, no boxed or carded panels on every side.",
+      "Don't use red for decoration, headings, status or a data series.",
+      "Don't put shadows on anything that does not float above the workspace.",
+      "Don't uppercase or letterspace interface labels, or label the same thing twice.",
+      "Don't use the serif italic for interface text."
+    ]
+  }
+}

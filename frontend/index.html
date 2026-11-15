@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Talasuri · SPHEREx flipbook and sky explorer</title>
+  <meta name="description" content="Talasuri (Tagalog tala, star + suri, to examine): blink through every SPHEREx infrared image of any spot on the sky, stack and difference them, and read off spectra and light curves.">
+  <meta name="application-name" content="Talasuri">
+  <meta name="theme-color" content="#0d1626">
+  <meta property="og:title" content="Talasuri">
+  <meta property="og:description" content="A SPHEREx flipbook: frames, stacks, difference images, spectra and light curves for any position on the sky.">
+  <meta property="og:type" content="website">
+  <!-- SYMBOL SLOT (favicon): frontend/assets/symbol.svg. Replace the file; no code changes. -->
+  <link rel="icon" type="image/svg+xml" href="assets/symbol.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="assets/main.css">
+  <!-- Filipino: hide the page until i18n.ts has translated it (failsafe: shown after 1.5 s anyway) -->
+  <style>.i18n-pending body { visibility: hidden; }</style>
+  <script>try { if (localStorage.getItem("talasuri.lang") === "fil") { document.documentElement.classList.add("i18n-pending"); setTimeout(function () { document.documentElement.classList.remove("i18n-pending"); }, 1500); } } catch (e) {}</script>
+</head>
+<body>
+<!-- ============================== TITLE SCREEN ============================== -->
+<!-- Covers the app on every open until dismissed (click, Enter or any key). Not shown in ?embed=1. -->
+<div id="title" role="dialog" aria-modal="true" aria-labelledby="titlename">
+  <!-- SYMBOL SLOT: frontend/assets/symbol.svg. Replace the file; no code changes. -->
+  <img src="assets/symbol.svg" alt="" width="128" height="128">
+  <h1 id="titlename">Talasuri</h1>
+  <p>SPHEREx flipbook and sky explorer</p>
+  <button id="titleenter" type="button" class="primary" autofocus>Enter</button>
+  <!-- language: saved per browser; the page reloads in the chosen language -->
+  <div id="langpick" class="seg" role="group" aria-label="Language / Wika" data-noi18n>
+    <button type="button" data-lang="en" aria-pressed="true" lang="en">English</button>
+    <button type="button" data-lang="fil" aria-pressed="false" lang="fil">Filipino</button>
+  </div>
+</div>
+<script>if (new URLSearchParams(location.search).get("embed") === "1") document.getElementById("title").remove();</script>
+
+<header id="top">
+  <a class="brand" href="./" aria-label="Talasuri home">
+    <!-- LOGO SLOT (wordmark): frontend/assets/logo.svg. Replace the file; no code changes. -->
+    <img src="assets/logo.svg" alt="Talasuri" height="26">
+  </a>
+  <nav id="tabs" role="tablist" aria-label="Mode">
+    <button role="tab" id="tabbtn-basic" data-tab="basic" title="Pick a position and watch">Interactive Viewer</button>
+    <button role="tab" id="tabbtn-adv" data-tab="adv" title="All settings and measurements">Characteristics</button>
+    <button role="tab" id="tabbtn-movers" data-tab="movers" title="Sources in this field that may be moving">Movement Classifier</button>
+  </nav>
+  <form id="search" role="search">
+    <div class="combo">
+      <svg class="glass" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+      <input id="q" placeholder="Barnard's Star, M 31, or RA Dec" autocomplete="off"
+             spellcheck="false" aria-label="Target name or coordinates">
+      <button type="submit" class="go" aria-label="Go">Go</button>
+      <ul id="qlist" hidden></ul>
+    </div>
+  </form>
+  <div id="status" role="status" aria-live="polite">
+    <span id="msg"></span>
+    <button id="retry" type="button" class="ghost" hidden>Retry failed</button>
+  </div>
+  <div class="tools">
+    <select id="rel" aria-label="Data release" title="Data release"><option value="all">All releases</option></select>
+    <button id="share" type="button" class="icon ghost" aria-haspopup="dialog" aria-label="Share" title="Share or embed">
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg></button>
+    <button id="help" type="button" class="icon ghost" aria-haspopup="dialog" aria-label="Help" title="Help (?)">
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.3"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1M8 11.3v.2"/></svg></button>
+  </div>
+  <div id="bar" aria-hidden="true"><div id="barfill"></div></div>
+</header>
+
+<main id="deck">
+  <!-- ================================ SETTINGS ================================ -->
+  <!-- Desktop: a labelled rail; each item opens its section in the flyout beside it. -->
+  <nav id="rail" aria-label="Settings">
+    <button type="button" data-sec="sec-fov" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="1"/><path d="M8 5.5v5M5.5 8h5"/></svg>Field</button>
+    <button type="button" data-sec="sec-time" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Time</button>
+    <button type="button" data-sec="sec-select" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1.5 11c1.6-5 3.2-7 4.4-7s2 3 3 5 1.8 3 2.6 3 1.6-1 3-4"/></svg>Bands</button>
+    <button type="button" data-sec="sec-combine" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 5l6-3 6 3-6 3zM2 8l6 3 6-3M2 11l6 3 6-3"/></svg>Stack</button>
+    <button type="button" data-sec="sec-display" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5v11" /><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>Stretch</button>
+    <button type="button" data-sec="sec-data" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="11.5" cy="4.5" r="2"/><path d="M2 13.5l7.6-7.6" stroke-dasharray="2 1.6"/></svg>Motion</button>
+    <button type="button" data-sec="sec-overlays" aria-controls="controls" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><path d="M8 1v3.5M8 11.5V15M1 8h3.5M11.5 8H15"/></svg>Overlays</button>
+  </nav>
+  <aside id="controls" class="panel sheet" aria-label="Settings">
+    <div class="panelhead"><h2>Settings</h2>
+      <button id="resetadv" type="button" class="ghost" title="Reset every setting except the target">Reset</button>
+      
+      <button type="button" class="ghost icon sheetclose" data-sheet="" aria-label="Close settings"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button></div>
+
+    <details class="sec" id="sec-fov" name="ctl"><summary>Field of view<span class="sum" id="sum-fov"></span></summary>
+      <label class="row">Field size <input id="fov" type="number" min="1" max="30" step="0.5" value="5"> arcmin</label>
+      <span id="fovwarn" class="warn" hidden></span>
+      <label class="row" title="Include deep-field images (many more, slower)"><input id="deep" type="checkbox"> Include deep-field images</label>
+      <label class="row" title="1× = fit the image to the space available">Magnify <input id="zoom" type="range" min="1" max="8" step="0.5"> <span id="zoomv" class="mono"></span></label>
+    </details>
+
+    <details class="sec" id="sec-time" name="ctl"><summary>Time and epochs<span class="sum" id="sum-time"></span></summary>
+      <label class="row">From <input id="t0" type="date"></label>
+      <label class="row">To <input id="t1" type="date"></label>
+      <label class="row">Epoch window <input id="win" type="number" min="0.1" step="any"> days</label>
+      <p class="hint">The window groups exposures into epochs: for per-epoch stacks, and to colour the plots.</p>
+      <label class="row">Frame time <input id="speed" type="range" min="50" max="2000" step="50"> <span id="speedv" class="mono"></span></label>
+    </details>
+
+    <details class="sec" id="sec-select" name="ctl"><summary>Wavelength<span class="sum" id="sum-select"></span></summary>
+      <p class="hint">Pick detectors with the band chips at the top right of the image. Leave everything blank to use all images.</p>
+      <label class="row">λ <input id="lmin" type="number" step="any" placeholder="0.75"> to <input id="lmax" type="number" step="any" placeholder="5.0"> µm</label>
+    </details>
+
+    <details class="sec" id="sec-combine" name="ctl"><summary>Stack and difference<span class="sum" id="sum-combine"></span></summary>
+      <label class="row">Quick view <select id="preset">
+        <option value="every">Every image, in time order</option>
+        <option value="visits">One stack per visit</option>
+        <option value="motion">Highlight movement</option>
+        <option value="colour">False-colour composite</option>
+        <option value="custom" disabled>Custom</option>
+      </select></label>
+      <label class="row">Show <select id="mode">
+        <option value="frames">Every image separately</option>
+        <option value="epoch">One stack per epoch</option>
+        <option value="detector">One stack per detector</option>
+        <option value="wave">One stack of the selected λ</option>
+        <option value="rgb">False colour from 3 detectors</option>
+      </select></label>
+      <p class="hint" id="modehint"></p>
+      <label class="row" id="row-rgb">R, G, B detectors <input id="rgb" class="mono" placeholder="6,4,2"></label>
+      <label class="row">Subtract <select id="diff">
+        <option value="none">Nothing</option>
+        <option value="median">Median of all</option>
+        <option value="ref">A reference image</option></select></label>
+      <label class="row" id="row-ref">Reference # <input id="ref" type="number" min="1" step="1"></label>
+    </details>
+
+    <details class="sec" id="sec-display" name="ctl"><summary>Stretch<span class="sum" id="sum-display"></span></summary>
+      <label class="row">Scale <select id="stretch">
+        <option value="linear">linear</option><option value="asinh">asinh (bright and faint)</option>
+        <option value="log">log</option><option value="sqrt">square root</option></select></label>
+      <div class="grid2">
+        <label>Black level <input id="vmin" type="number" step="any"> <small>MJy/sr</small></label>
+        <label>White level <input id="vmax" type="number" step="any"> <small>MJy/sr</small></label>
+      </div>
+      <button id="auto" type="button">Automatic levels</button>
+      <label class="row"><input id="inv" type="checkbox"> Dark objects on white sky (untick for bright on black)</label>
+      <div class="sub">Bad-pixel flags</div>
+      <label class="row">Flagged pixels <select id="flag"><option value="off">not shown</option><option value="overlay">highlighted</option><option value="mask">blanked</option></select></label>
+      <select id="fbits" multiple size="6" aria-label="Flags to show" title="Ctrl/Cmd-click to choose several. None selected = all * flags."></select>
+      <p class="hint">* = treated as bad in stacks and measurements.</p>
+    </details>
+
+    <details class="sec" id="sec-data" name="ctl"><summary>Proper motion<span class="sum" id="sum-data"></span></summary>
+      <p class="hint">Tracking keeps a moving star centred and moves the crosshair with it.</p>
+      <label class="row"><input id="pm" type="checkbox"> Track target's motion</label>
+      <div class="grid2">
+        <label>μ RA <input id="pmra" type="number" step="any"> <small>mas/yr</small></label>
+        <label>μ Dec <input id="pmdec" type="number" step="any"> <small>mas/yr</small></label>
+        <label>Epoch <input id="pmep" type="number" step="any"> <small>year</small></label>
+        <button id="gaiapm" type="button" class="gridbtn">Look up in Gaia DR3</button>
+      </div>
+    </details>
+
+    <details class="sec" id="sec-overlays" name="ctl"><summary>Overlays<span class="sum" id="sum-overlays"></span></summary>
+      <label class="row"><input id="xhair" type="checkbox"> Crosshair on target</label>
+      <p class="hint">Catalogue stars are moved to each image's date.</p>
+      <label class="row"><input id="gaia" type="checkbox"> Gaia DR3 <span class="swatch" style="--c:#86b6ef"></span></label>
+      <label class="row"><input id="catwise" type="checkbox"> CatWISE2020 <span class="swatch" style="--c:#ffb547"></span></label>
+      <div class="sub">Sky Sphere</div>
+      <label class="row">Sky <select id="slayer"></select></label>
+      <label class="row"><input id="sgrid" type="checkbox"> RA/Dec grid</label>
+      <label class="row"><input id="secl" type="checkbox"> Ecliptic</label>
+      <label class="row"><input id="sgal" type="checkbox"> Galactic plane</label>
+      <div class="sub">Aladin</div>
+      <label class="row">Imagery <select id="hips"><option value="spherex">SPHEREx (follows frame λ)</option><option value="unwise">unWISE (infrared)</option><option value="2mass">2MASS (near-infrared)</option><option value="dss">DSS2 (optical)</option><option value="none">Mellinger (optical)</option></select></label>
+      <small id="hipsnote"></small>
+    </details>
+  </aside>
+
+  <!-- ================================ VIEWPORT ================================ -->
+  <section id="viewport" class="panel" aria-label="Viewport">
+    <div id="viewhead">
+      <div id="plate">
+        <h1 id="platename" class="name">Talasuri</h1>
+        <dl id="platemeta"></dl>
+      </div>
+      <div id="basicbar" class="basic-only">
+        <label>Show <select id="bpreset">
+          <option value="every">Every image, in time order</option>
+          <option value="visits">One combined image per visit</option>
+          <option value="motion">Highlight movement (change since first visit)</option>
+          <option value="colour">False-colour composite</option>
+          <option value="custom" disabled>Custom (set in Characteristics)</option>
+        </select></label>
+        <label>Field <input id="bfov" type="number" min="1" max="30" step="0.5"> arcmin</label>
+      </div>
+      <div id="viewtabs" role="tablist" aria-label="View">
+        <button role="tab" id="vt-flipbook" data-view="flipbook" aria-controls="view-flipbook">Flipbook</button>
+        <button role="tab" id="vt-sphere" data-view="sphere" aria-controls="view-sphere" title="Sky Sphere (S)">Sky Sphere</button>
+        <button role="tab" id="vt-aladin" data-view="aladin" aria-controls="view-aladin">Aladin</button>
+      </div>
+      <div id="pickbar" hidden>
+        <span id="picktext" class="mono"></span>
+        <button id="pickgo" type="button" class="primary">Load frames here</button>
+        <button id="pickclear" type="button" class="ghost icon" aria-label="Dismiss picked position"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Flipbook tab: the flipbook and a sky map side by side (the map is the Sky Sphere or
+         Aladin; the same map fills the whole viewport in its own tab). -->
+    <div id="view-flipbook" class="view" role="tabpanel" aria-labelledby="vt-flipbook">
+     <div id="flipcol">
+      <div id="stage">
+        <div id="canvaswrap"><canvas id="canvas" width="0" height="0" aria-label="SPHEREx image, north up, east left"></canvas></div>
+        <!-- HUD: readouts in the corners, over the image but never altering it -->
+        <div id="hud" hidden>
+          <!-- the plate frame: neat-line and RA/Dec ticks drawn around the image, never on it -->
+          <canvas id="plateframe" aria-hidden="true"></canvas>
+          <div class="readout br"><div id="hud-scale"><i></i><span></span></div>N ↑ &nbsp;E ←</div>
+        </div>
+        <!-- band selector: one chip per detector, top right of the plate (stays usable when no frame matches) -->
+        <div id="dets" role="group" aria-label="Detector bands (none selected = all)"></div>
+        <div id="stagestate" class="statecard">
+          <!-- SYMBOL SLOT (loading spinner): frontend/assets/symbol.svg -->
+          <img class="spinner" src="assets/symbol.svg" alt="" width="54" height="54">
+          <div id="statetitle" class="head"></div>
+          <p id="statetext"></p>
+          <div id="stateactions"></div>
+        </div>
+      </div>
+      <div class="foot">
+      <p id="basicwarn" class="warn basic-only"></p>
+      <div id="timeline">
+        <canvas id="ticks" aria-hidden="true"></canvas>
+        <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Frame">
+        <div id="detlegend" aria-label="Tick colours by detector"></div>
+      </div>
+      <div id="playerbar">
+        <div class="transport">
+          <button id="prev" type="button" class="icon" title="Previous (←)" aria-label="Previous frame"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.5 3L4.5 8l7 5z"/></svg></button>
+          <button id="play" type="button" class="icon primary" title="Play/pause (Space)" aria-label="Play"><svg class="i-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2.8l8.5 5.2L5 13.2z"/></svg><svg class="i-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg></button>
+          <button id="next" type="button" class="icon" title="Next (→)" aria-label="Next frame"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.5 3l7 5-7 5z"/></svg></button>
+          <button id="difftoggle" type="button" title="Toggle difference imaging (D)" aria-pressed="false">Diff</button>
+        </div>
+        <div id="simplelabel" class="basic-only">–</div>
+        <div id="caption" class="mono"><b id="hud-frame"></b><span id="hud-label"></span><span id="hud-date"></span><span id="hud-det"></span><span id="hud-lam"></span><span id="hud-flag" class="flagged"></span></div>
+        <span id="cursor" class="mono"></span>
+      </div>
+      </div>
+     </div>
+     <div id="mapcol" aria-label="Sky map">
+      <div id="mapslot" class="slot"></div>
+      <div class="foot mapfoot">
+        <div class="seg mapswitch" role="group" aria-label="Sky map shown beside the flipbook">
+          <button type="button" data-map="sphere" aria-pressed="true">Sky Sphere</button>
+          <button type="button" data-map="aladin" aria-pressed="false">Aladin</button>
+        </div>
+        <p class="maphint">Drag to look around. Click the sky to pick a new position.</p>
+      </div>
+     </div>
+    </div>
+
+    <div id="view-sphere" class="view" role="tabpanel" aria-labelledby="vt-sphere" hidden>
+     <div id="sphereslot" class="slot">
+      <div id="spherestage">
+        <div class="spheretools">
+          <div class="seg" role="group" aria-label="Sphere view">
+            <button type="button" data-sphere="inside" aria-pressed="true" title="Stand inside the sky: north up, east left">Inside</button>
+            <button type="button" data-sphere="outside" aria-pressed="false" title="See the sky as a globe from outside">Outside</button>
+          </div>
+          <span id="mirrorbadge" class="badge" hidden>Outside view (mirrored)</span>
+        </div>
+        <div id="spherepresets" class="spherepresets" aria-label="Preset targets"></div>
+        <div id="spherecursor" class="readout" hidden></div>
+        <div id="spherestate" class="statecard" hidden><img class="spinner" src="assets/symbol.svg" alt="" width="54" height="54"><div class="head">Loading sky sphere…</div></div>
+      </div>
+     </div>
+      <small id="spherenote" class="viewnote"></small>
+    </div>
+
+    <div id="view-aladin" class="view" role="tabpanel" aria-labelledby="vt-aladin" hidden>
+      <div id="aladinslot" class="slot"><div id="aladin"></div></div>
+    </div>
+
+    <!-- SYMBOL SLOT (embed watermark): frontend/assets/symbol.svg -->
+    <a id="watermark" href="#" target="_blank" rel="noopener" title="Open in Talasuri" hidden>
+      <img src="assets/symbol.svg" alt="Talasuri" width="26" height="26"></a>
+  </section>
+
+  <!-- ============================== MEASUREMENTS ============================== -->
+  <aside id="telemetry" class="panel sheet" aria-label="Measurements">
+    <div class="panelhead"><h2>Measurements</h2>
+      <a id="csv" href="#" download title="Download the photometry as CSV">CSV</a>
+      <button type="button" class="ghost icon sheetclose" data-sheet="" aria-label="Close measurements"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button></div>
+    <div class="plotopts">
+      <label title="6.15″ per pixel">Aperture <input id="ap" type="number" min="0.5" max="6" step="0.5"> px</label>
+      <label><input id="showflagged" type="checkbox" checked> Include flagged</label>
+    </div>
+    <div id="photnote" class="warn"></div>
+    <div class="plot"><h3>Spectrum <small>by epoch</small></h3>
+      <div class="plotbox"><canvas id="spec"></canvas></div></div>
+    <div class="plot"><h3>Light curve <small>flux vs time</small></h3>
+      <label class="row">λ <input id="lcmin" type="number" step="any" placeholder="all"> to <input id="lcmax" type="number" step="any" placeholder="all"> µm</label>
+      <div class="plotbox"><canvas id="lc"></canvas></div></div>
+
+    <details class="sec" id="motionsec"><summary>Motion prediction<span class="sum" id="sum-motion"></span></summary>
+      <label class="row"><input id="wfit" type="checkbox"> Predict the position from WISE epochs</label>
+      <p class="hint">Fits position, proper motion and parallax to this object's WISE and NEOWISE detections
+        (2010–2024) and extrapolates to the date of each SPHEREx image. On the image, the mark with four
+        diagonal ticks is the prediction and its ellipse the 95% uncertainty, drawn to scale.</p>
+      <div id="motionstate" class="hint" role="status"></div>
+      <div id="motionwarn" class="warn"></div>
+      <pre id="motionread" hidden></pre>
+      <div class="plotbox" id="motionbox" hidden><canvas id="motionplot"></canvas></div>
+      <p class="hint" id="motionkey" hidden>Position minus straight-line motion. Points: WISE visits (amber, hollow: left
+        out of the fit). Line: fitted parallax wobble. Band: ±1σ of the predicted position. Shaded: the
+        SPHEREx images.</p>
+      <button id="motionuse" type="button" hidden title="Make the fitted position and proper motion the tracked target">Track with this motion</button>
+    </details>
+    <details class="sec"><summary>Flags<span class="sum" id="sum-flags"></span></summary>
+      <div id="flagread"></div>
+      <p id="basicnote" class="warn"></p>
+    </details>
+    <details class="sec"><summary>Frame metadata</summary>
+      <div id="links"></div>
+      <pre id="hdrtext"></pre>
+    </details>
+    <details class="sec" id="framesdetail"><summary>All observations <span id="obscount" class="mono"></span></summary>
+      <div id="framelist"></div>
+    </details>
+  </aside>
+
+  <!-- ============================ MOVER CANDIDATES ============================ -->
+  <aside id="movers" class="panel" aria-label="Mover candidates">
+    <div class="panelhead"><h2>Mover candidates</h2></div>
+    <p class="hint">CatWISE2020 sources in this field whose catalogued motion looks significant, ranked by a
+      machine-learning classifier's probability that they really move (by 50 mas/yr or more). Most
+      significant-looking motions of faint sources are artifacts; the classifier separates the two.
+      Rings on the image mark the candidates listed.</p>
+    <div class="moveropts">
+      <label>Probability at least <input id="mvmin" type="range" min="0" max="0.9" step="0.1" value="0.5"> <span id="mvminv" class="mono">0.5</span></label>
+      <label><input id="mvnew" type="checkbox"> Hide stars Gaia already measures</label>
+    </div>
+    <div id="moverstate" class="hint" role="status"></div>
+    <div id="moverlist"></div>
+    <div id="moverdetail" hidden></div>
+    <details class="sec"><summary>About the classifier</summary><div id="movermodel" class="hint"></div></details>
+  </aside>
+</main>
+
+<nav id="sheetbar" aria-label="Panels">
+  <button type="button" data-sheet="controls" aria-controls="controls" aria-pressed="false">Settings</button>
+  <button type="button" data-sheet="telemetry" aria-controls="telemetry" aria-expanded="false">Measurements</button>
+</nav>
+
+<!-- ================================== HELP ================================== -->
+<dialog id="helpdlg" aria-labelledby="helptitle">
+  <div class="dlghead"><h2 id="helptitle">Talasuri: help</h2><button type="button" class="ghost icon dlgclose" aria-label="Close"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button></div>
+  <div class="dlgbody" id="helpbody">
+    <section>
+      <h3>What this is</h3>
+      <p><b>Talasuri</b> (Tagalog <i>tala</i>, “star”, + <i>suri</i>, “to examine”) gathers every
+        <b>SPHEREx</b> image of the patch of sky you choose, lines them up on one grid and plays them in time
+        order like a flipbook. SPHEREx is a NASA space telescope that maps the whole sky in infrared light
+        (0.75–5 µm) through 102 colours, about twice a year. Things that <b>move</b> or <b>change brightness</b>
+        stand out; the tool also measures the target in every image, giving a spectrum and a light curve.</p>
+    </section>
+    <section>
+      <h3>Quick start</h3>
+      <ol>
+        <li><b>Pick a target:</b> type a name or coordinates in the search box, or open <i>Sky Sphere</i> or
+          <i>Aladin</i>, click the sky and press <i>Load frames here</i>.</li>
+        <li><b>Wait for the frames.</b> A first visit reads a few hundred images from NASA's archive (about a
+          minute); frames appear after ~10 s. Return visits take seconds.</li>
+        <li><b>Press ▶</b>, or set <i>Quick view</i> to <i>Highlight movement</i>.</li>
+      </ol>
+      <div class="examples">
+        <button type="button" data-ex="Barnard's star" data-preset="motion"><b>Barnard's Star</b><span>The fastest-moving star in the sky.</span></button>
+        <button type="button" data-ex="WISE 0855-0714" data-preset="motion" data-dets="5,6"><b>WISE 0855−0714</b><span>The coldest known brown dwarf; only seen at the longest wavelengths.</span></button>
+        <button type="button" data-ex="eps Ind B" data-preset="visits"><b>ε Indi B</b><span>A brown-dwarf pair, bright in the infrared.</span></button>
+        <button type="button" data-ex="RW Aur" data-preset="every"><b>RW Aur</b><span>A young variable star (saturates SPHEREx).</span></button>
+        <button type="button" data-ex="R Dra" data-preset="every"><b>R Dra</b><span>A Mira variable (saturates SPHEREx).</span></button>
+        <button type="button" data-ex="Orion Nebula" data-preset="colour"><b>Orion Nebula</b><span>A star-forming cloud in false colour.</span></button>
+      </div>
+    </section>
+    <section>
+      <h3>The three views</h3>
+      <ul>
+        <li><b>Movement Classifier</b> (top left) lists sources in the field that may be moving: CatWISE2020 motions
+          ranked by a classifier trained against Gaia and known brown dwarfs. A probability, not a discovery:
+          check the flipbook.</li>
+        <li><b>Interactive Viewer and Characteristics</b> (top left). <i>Interactive Viewer</i> shows just the flipbook and a sky map side by
+          side: pick a position, press play. <i>Characteristics</i> adds Settings, Measurements and the full-size
+          Sky Sphere and Aladin views.</li>
+        <li><b>Flipbook:</b> the images. The line under the image gives frame number, date, MJD, detector and
+          wavelength; the scale bar sits in the image's corner. The strip under the image has one tick per frame, coloured by detector; amber caps mark
+          frames whose target pixel is flagged. North is up, east is left.</li>
+        <li><b>Sky Sphere:</b> the whole sky for orientation. <i>Inside</i> puts you at the centre of the
+          celestial sphere (north up, east left, as the real sky). <i>Outside</i> shows the sky as a globe, which
+          is mirror-reversed: east is to the right. Drag to look around, scroll to zoom, click to pick a position.
+          Diamonds are preset targets.</li>
+        <li><b>Aladin:</b> a zoomable survey map (CDS Aladin Lite) with the loaded field and catalogue overlays.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Reading the images</h3>
+      <ul>
+        <li><b>Each frame is a different colour.</b> SPHEREx's filters vary across the detector, so stars brighten
+          and fade between frames even when nothing changes. Compare frames from one detector, or use stacks.</li>
+        <li><b>Movement</b> in a difference image is a dark spot (where it was) beside a bright spot (where it is).</li>
+        <li><b>Pixels are big</b> (6.15″): close pairs blend, and one pixel of motion takes most fast stars a year.</li>
+        <li><b>Very bright stars saturate:</b> their cores are blank or wrong and the tool warns you. Positions and
+          motion are still useful; brightness is not.</li>
+        <li><b>Images are never tinted.</b> Greyscale is a neutral ramp; the only colour added is the bad-pixel
+          highlight you switch on under <i>Stretch</i>.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Settings</h3>
+      <ul>
+        <li><b>Field of view:</b> how much sky to load (1–30′) and on-screen magnification.</li>
+        <li><b>Time and epochs:</b> date range, the window that groups exposures into epochs, frame time.</li>
+        <li><b>Detectors and wavelength:</b> limit to detectors (each covers a band) or a wavelength range.</li>
+        <li><b>Stack and difference:</b> every image, stacks per epoch or detector, one wavelength stack, or false
+          colour; optionally subtract the median or a reference image.</li>
+        <li><b>Stretch:</b> brightness scale, black/white levels, invert, and bad-pixel flags.</li>
+        <li><b>Proper motion:</b> track a moving target; <i>Look up in Gaia DR3</i> fills the values in.
+          <i>Motion prediction</i> (in Measurements) fits the object's WISE epochs instead and marks where it
+          should be in each image, with an uncertainty ellipse.</li>
+        <li><b>Overlays:</b> crosshair, Gaia and CatWISE sources, sphere grid and planes, Aladin imagery.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Measurements</h3>
+      <p>For every image the tool sums the light in a small circle on the target and subtracts the local
+        background and the zodiacal glow (<i>forced aperture photometry</i>, in µJy, no aperture correction).
+        The <b>spectrum</b> is coloured by epoch (darker = earlier); the <b>light curve</b> is best read over a
+        narrow wavelength range. Hollow points touch bad pixels. A neighbour inside the circle adds its light.</p>
+    </section>
+    <section>
+      <h3>Keyboard</h3>
+      <table class="keys">
+        <tr><td><kbd>Space</kbd></td><td>Play / pause</td></tr>
+        <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next frame</td></tr>
+        <tr><td><kbd>D</kbd></td><td>Difference imaging on / off</td></tr>
+        <tr><td><kbd>S</kbd></td><td>Sky Sphere / back to the flipbook</td></tr>
+        <tr><td><kbd>?</kbd></td><td>This help</td></tr>
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd> <kbd>Esc</kbd></td><td>Search suggestions</td></tr>
+        <tr><td>On the sphere</td><td>Arrows look around, <kbd>+</kbd> <kbd>−</kbd> zoom, <kbd>Enter</kbd> picks the centre</td></tr>
+      </table>
+      <p class="hint">Every setting lives in the page address, so copying the URL (or <i>Share</i>) reproduces exactly
+        what you see. <code>?embed=1</code> gives a compact player for other pages.</p>
+    </section>
+    <section id="creditsec">
+      <h3>Data, credits &amp; limits</h3>
+      <p>SPHEREx Spectral Images come from the <a href="https://irsa.ipac.caltech.edu/Missions/spherex.html" target="_blank" rel="noopener">NASA/IPAC Infrared Science Archive (IRSA)</a>.
+        Names and positions: SIMBAD and Sesame (CDS). Sky maps: Aladin Lite (CDS), the SPHEREx DR1 all-sky map (IRSA),
+        2MASS, unWISE/AllWISE and DSS. Catalogues: Gaia DR3 (ESA) and CatWISE2020.</p>
+      <blockquote>This publication makes use of data products from the Spectro-Photometer for the History
+        of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of
+        the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the
+        National Aeronautics and Space Administration.</blockquote>
+      <blockquote>This research has made use of the NASA/IPAC Infrared Science Archive, which is funded by
+        the National Aeronautics and Space Administration and operated by the California Institute of Technology.</blockquote>
+      <blockquote>This research has made use of “Aladin sky atlas” developed at CDS, Strasbourg Observatory, France,
+        and of data from the European Space Agency (ESA) mission Gaia, processed by the Gaia Data Processing and
+        Analysis Consortium (DPAC).</blockquote>
+      <ul>
+        <li>Planets, moons and asteroids move too fast to follow.</li>
+        <li>Brightness measurements are quick-look values, not publication-grade photometry.</li>
+        <li>Talasuri is an independent tool, not an official NASA or IRSA product.</li>
+      </ul>
+    </section>
+  </div>
+</dialog>
+
+<!-- ============================== SHARE / EMBED ============================== -->
+<dialog id="sharedlg" aria-labelledby="sharetitle">
+  <div class="dlghead"><h2 id="sharetitle">Share / embed</h2><button type="button" class="ghost icon dlgclose" aria-label="Close"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button></div>
+  <div class="dlgbody">
+    <label class="copyrow">Link to this exact view
+      <span><input id="shareurl" class="mono" readonly><button type="button" data-copy="shareurl">Copy</button></span></label>
+    <label class="copyrow">Compact player link (<code>?embed=1</code>)
+      <span><input id="embedurl" class="mono" readonly><button type="button" data-copy="embedurl">Copy</button></span></label>
+    <label class="copyrow">Embed code
+      <span><textarea id="embedcode" class="mono" rows="3" readonly></textarea><button type="button" data-copy="embedcode">Copy</button></span></label>
+    <p class="hint" id="copynote" role="status"></p>
+  </div>
+</dialog>
+
+<script type="module" src="assets/main.js"></script>
+</body>
+</html>

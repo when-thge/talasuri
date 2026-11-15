@@ -1,0 +1,31 @@
+{
+  "comment": "Sky Sphere textures. scripts/build_sky_textures.py renders each layer once into frontend/assets/sky/<id>.jpg (equirectangular CAR, RA 0 at the centre, RA increasing to the left, north up); that static file is the whole-sky view. 'tiles' names the survey's HiPS, from which the sphere loads sharper tiles as the view zooms in (maxOrder = the survey's hips_order; 'sliced' = this app's per-slice proxy of a HiPS cube, slice nearest cube_um).",
+  "width": 4096,
+  "height": 2048,
+  "default": "2mass",
+  "layers": [
+    {
+      "id": "2mass",
+      "label": "2MASS colour (near-infrared)",
+      "credit": "2MASS (UMass/IPAC-Caltech/NASA/NSF), via CDS/IRSA HiPS",
+      "hips2fits": "CDS/P/2MASS/color",
+      "hips": ["https://alasky.cds.unistra.fr/2MASS/Color", "https://irsa.ipac.caltech.edu/data/hips/CDS/2MASS/Color"],
+      "tiles": { "url": "https://irsa.ipac.caltech.edu/data/hips/CDS/2MASS/Color", "format": "jpg", "maxOrder": 9 }
+    },
+    {
+      "id": "dss",
+      "label": "DSS2 colour (optical)",
+      "credit": "Digitized Sky Survey 2 (STScI/AURA), via CDS HiPS",
+      "hips2fits": "CDS/P/DSS2/color",
+      "hips": ["https://alasky.cds.unistra.fr/DSS/DSSColor", "https://alaskybis.cds.unistra.fr/DSS/DSSColor"]
+    },
+    {
+      "id": "spherex",
+      "label": "SPHEREx DR1 all-sky (2.2 µm)",
+      "credit": "SPHEREx DR1 all-sky map (NASA/JPL-Caltech/IPAC), via IRSA HiPS",
+      "hips": ["https://irsa.ipac.caltech.edu/data/hips/SPHEREx/spherex_allsky_cube"],
+      "cube_um": 2.2,
+      "tiles": { "url": "api/hips/spherex", "format": "png", "maxOrder": 5, "sliced": true }
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+ "wise0855": {
+  "target": "wise0855",
+  "query": "WISEA J085510.74-071442.5",
+  "resolved": {
+   "ra": 133.81890825,
+   "dec": -7.247048,
+   "pmra": -8123.7,
+   "pmdec": 673.2,
+   "epoch": 2000.0,
+   "name": "WISEA J085510.74-071442.5",
+   "source": "sesame"
+  },
+  "fov_arcmin": 5.0,
+  "center": [
+   133.76006037477617,
+   -7.242210313710817
+  ],
+  "state": "done",
+  "message": "Loaded 256/258 frames; 2 failed",
+  "errors": [],
+  "n_observations": 258,
+  "n_loaded": 256,
+  "n_failed": 2,
+  "elapsed_s": 348.4,
+  "alignment": {
+   "n": 587,
+   "rms_px": 0.42607830050356904,
+   "median_px": 0.06450642990066908,
+   "p95_px": 0.84058181236595,
+   "max_px": 2.888827176762688
+  },
+  "spectrum": {
+   "n_points": 256,
+   "n_good": 202,
+   "lam_range_um": [
+    0.7439152066896846,
+    5.003459916911074
+   ],
+   "per_detector": {
+    "D1": {
+     "n": 31,
+     "median_flux_ujy": 1007.0224818740918,
+     "median_snr": 14.685240009174388
+    },
+    "D2": {
+     "n": 38,
+     "median_flux_ujy": 880.9371248623355,
+     "median_snr": 14.436556551490888
+    },
+    "D3": {
+     "n": 40,
+     "median_flux_ujy": 633.0045151036015,
+     "median_snr": 11.78818918816135
+    },
+    "D4": {
+     "n": 29,
+     "median_flux_ujy": 283.3550793054467,
+     "median_snr": 6.474194412867467
+    },
+    "D5": {
+     "n": 30,
+     "median_flux_ujy": 553.0310138295083,
+     "median_snr": 4.341076221908285
+    },
+    "D6": {
+     "n": 34,
+     "median_flux_ujy": 560.4611349440488,
+     "median_snr": 3.1448775141313674
+    }
+   }
+  },
+  "detectors": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "mjd_range": [
+   60800.70069465,
+   61174.287883944
+  ],
+  "pass": true
+ }
+}
