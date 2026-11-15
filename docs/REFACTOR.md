@@ -209,7 +209,6 @@ Test edits: `tests/test_units.py` needed import changes only (new module paths,
 - **Aladin's CDS console errors remain** (a CDS logger hostname that does not resolve),
   as recorded in TESTING.md.
 - **Old screenshots** from the previous interface (`docs/screenshots/ui_*`, `guide_*`,
-  `fit_*`, `search_*`, `embed_mode.png`) are no longer referenced and were left in place;
-  they can be deleted.
+  `fit_*`, `search_*`, `embed_mode.png`) have since been deleted.
 - The Python package is still named `spherex_viewer` and the env prefix is still `SPX_`;
   renaming them would break existing deployments and caches for no user-visible gain.

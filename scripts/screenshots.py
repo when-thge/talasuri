@@ -28,10 +28,7 @@ SHOTS = [
     ("talasuri_sphere_outside", "", f"tab=adv&{WISE}&view=sphere&sphere=outside&secl=1&sgal=1", (1600, 1000), SPHERE_READY, None),
     ("talasuri_sphere_pick", "", "tab=adv&view=sphere&pra=83.82&pdec=-5.39&slayer=spherex", (1600, 1000), SPHERE_READY, None),
     ("talasuri_aladin", "", f"tab=adv&{WISE}&view=aladin&hips=spherex", (1600, 1000), "document.querySelector('#hipsnote').textContent.length > 0", None),
-    ("talasuri_empty", "", "", (1600, 1000), "!document.querySelector('#stagestate').hidden", None),
-    ("talasuri_help", "", "", (1600, 1000), "true", "document.querySelector('#help').click()"),
     ("talasuri_embed", "?embed=1", f"{WISE}&mode=epoch&win=60&dets=5,6", (640, 720), FRAMES_READY, None),
-    ("talasuri_mobile", "", f"{WISE}&mode=epoch&win=60&dets=5,6", (390, 844), FRAMES_READY, None),
     ("talasuri_mobile_sheet", "", f"tab=adv&{WISE}&mode=epoch&win=60&dets=5,6", (390, 844), FRAMES_READY,
      "document.querySelector('#sheetbar button').click()"),
 ]
