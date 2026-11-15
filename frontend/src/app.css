@@ -4,11 +4,17 @@
  * panels scroll. Narrow screens: one column, side panels become bottom sheets. */
 body { display: flex; flex-direction: column; overflow: hidden; }
 
+/* the title screen's Milky Way, blurred to a glow, behind everything; the chart surfaces above it
+   are slightly see-through so it reads as depth. The science image's stage stays solid black. */
+#appsky { position: fixed; inset: -40px; z-index: 0; pointer-events: none; opacity: .65;
+  background-position: 72% 70%; background-size: cover; background-repeat: no-repeat; }
+#top, #deck, #sheetbar { position: relative; z-index: 1; }
+
 /* ---- header ------------------------------------------------------------------------------ */
 #top { position: relative; z-index: 50; flex: none; height: 56px; display: flex; align-items: center; gap: 28px;
-  padding: 0 16px 0 20px; border-bottom: 1px solid var(--ink-4); background: var(--ink-0); }
+  padding: 0 16px 0 20px; border-bottom: 1px solid var(--ink-4); background: rgba(10, 18, 32, .78); }
 .brand { display: flex; align-items: center; flex: none; }
-.brand img { display: block; height: 26px; width: auto; }
+.brand img { display: block; height: 34px; width: auto; }
 
 #tabs { display: flex; gap: 22px; align-self: stretch; }
 #tabs button { border: 0; border-radius: 0; background: none; padding: 0; color: var(--text-2); font-weight: 500;
@@ -71,7 +77,7 @@ body[data-tab="movers"] :is(#rail, #controls, #telemetry, #viewtabs, #sheetbar, 
 body[data-tab="movers"] #movers { display: block; }
 
 /* ---- settings rail and column -------------------------------------------------------------- */
-#rail { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 0; border-right: 1px solid var(--ink-4); background: var(--ink-0); }
+#rail { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 0; border-right: 1px solid var(--ink-4); background: rgba(10, 18, 32, .78); }
 #rail button { width: 52px; padding: 8px 0 6px; border: 0; background: none; border-radius: var(--radius); color: var(--text-3);
   display: grid; justify-items: center; gap: 4px; font-size: 11px; font-weight: 500; }
 #rail button:hover { color: var(--text); background: var(--ink-2); }
@@ -118,7 +124,7 @@ body[data-tab="movers"] #movers { display: block; }
 
 /* ---- viewport ------------------------------------------------------------------------------ */
 #viewport { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 20px 28px 16px;
-  background-color: var(--ink-1);
+  background-color: rgba(13, 22, 38, .5);
   background-image: linear-gradient(rgba(169, 182, 201, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 182, 201, .035) 1px, transparent 1px);
   background-size: 48px 48px; background-position: -1px -1px; }
 #viewhead { flex: none; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--ink-4); }
@@ -252,7 +258,7 @@ canvas#canvas { margin: auto; display: block; image-rendering: pixelated; cursor
 #framelist tr.error td { color: var(--danger); }
 
 /* movers */
-#movers { background: var(--ink-2); }
+#movers { background: rgba(17, 29, 49, .86); }
 #movers > .hint:first-of-type { margin-top: 0; }
 .moveropts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: 12px 0; color: var(--text-2); font-size: var(--fs-sm); }
 .moveropts input[type="range"] { width: 90px; vertical-align: middle; }
@@ -380,8 +386,29 @@ body.embed #caption { display: block !important; }
   gap: 12px; padding: 24px; text-align: center; cursor: pointer; background: var(--ink-1);
   transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease); }
 #title.out { opacity: 0; transform: scale(1.01); pointer-events: none; }
-#title img { width: min(96px, 26vw); height: auto; border-radius: 22%; margin-bottom: 8px; }
-#title h1 { font: italic 500 clamp(40px, 9vw, 72px)/1.05 var(--font-name); letter-spacing: -.015em; }
+/* the sky behind the title: the real SPHEREx all-sky map around the Galactic centre (greyscale,
+   untinted), dimmed by a chart-navy veil that is darkest behind the logo, under a faint atlas
+   graticule. The map settles in once on open. */
+#title .titlesky, #title::after { position: absolute; inset: 0; pointer-events: none; }
+#title::after { content: ""; }
+#title .titlesky {
+  z-index: 0; background-position: 72% 70%; background-size: cover; background-repeat: no-repeat; opacity: .62;
+  animation: titlesky 3.2s var(--ease) both;
+}
+#title::after {
+  background:
+    radial-gradient(ellipse 46% 40% at 50% 46%, rgba(13, 22, 38, .9), rgba(13, 22, 38, .55) 60%, rgba(13, 22, 38, 0) 100%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, rgba(10, 18, 32, 0) 55%, rgba(10, 18, 32, .85) 100%),
+    repeating-linear-gradient(0deg, rgba(169, 182, 201, .05) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(90deg, rgba(169, 182, 201, .05) 0 1px, transparent 1px 120px);
+}
+#title > :not(.titlesky) { position: relative; z-index: 1; }
+@keyframes titlesky { from { opacity: 0; transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { #title .titlesky { animation: none; } }
+#title .titlecredit { position: absolute; right: 20px; bottom: 16px; left: 20px; text-align: left;
+  font-size: var(--fs-xs); color: var(--text-2); text-shadow: 0 1px 3px rgba(5, 9, 17, .9); }
+#title h1 { margin: 0 0 4px; line-height: 0; }
+#title h1 img { display: block; width: min(680px, 92vw); height: auto; }
 #title p { margin: 0; color: var(--text-2); font-size: var(--fs-lg); }
 #titleenter { margin-top: 22px; padding: 10px 36px; font-size: var(--fs-md); }
 #langpick { margin-top: 10px; }

@@ -30,6 +30,8 @@ const FIL: Record<string, string> = {
   "SPHEREx flipbook and sky explorer": "SPHEREx flipbook at panggalugad ng langit",
   "Talasuri · SPHEREx flipbook and sky explorer": "Talasuri · SPHEREx flipbook at panggalugad ng langit",
   "Enter": "Pumasok",
+  "Background: the SPHEREx all-sky map at 2.2 µm, around the centre of the Milky Way (NASA/JPL-Caltech/IPAC)":
+    "Likuran: ang mapa ng buong langit ng SPHEREx sa 2.2 µm, sa paligid ng gitna ng Milky Way (NASA/JPL-Caltech/IPAC)",
   "Talasuri home": "Home ng Talasuri",
   "Mode": "Mode",
   "Interactive Viewer": "Interaktibong Viewer",

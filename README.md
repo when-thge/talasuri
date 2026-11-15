@@ -24,6 +24,7 @@ light curve for the target.
 |---|---|---|
 | ![](docs/screenshots/talasuri_flipbook_diff.png) | ![](docs/screenshots/talasuri_embed.png) | ![](docs/screenshots/talasuri_mobile_sheet.png) |
 
+New to the app? [GUIDE.md](GUIDE.md) walks through opening and using it.
 See [docs/TESTING.md](docs/TESTING.md) for acceptance results and [docs/REFACTOR.md](docs/REFACTOR.md) for what
 the last refactor changed.
 
@@ -235,15 +236,17 @@ Add `?embed=1` for the compact player (viewport, player controls, symbol waterma
 
 ### Branding: swapping the logo and symbol
 
-Two files, both placeholders (a ringed circle and the text "TALASURI", in a dashed amber
-frame so they are obviously temporary):
+The logo is a constellation drawn as a "T" beside the TALASURI wordmark. The master file
+is `frontend/assets/logo-light.svg` (dark ink, for light backgrounds); the app uses two
+versions derived from it for its dark interface:
 
 | File | Used for |
 |---|---|
-| `frontend/assets/logo.svg` | the wordmark at the top-left of the header |
-| `frontend/assets/symbol.svg` | favicon, loading spinner, embed watermark (square) |
+| `frontend/assets/logo-light.svg` | master artwork, for light backgrounds (not used by the app) |
+| `frontend/assets/logo.svg` | the header logo and the title screen: the master recoloured to chalk `#e9eef5` and blue `#8fb3e8` |
+| `frontend/assets/symbol.svg` | favicon, loading spinner, embed watermark: the constellation mark alone on chart navy, with heavier lines for small sizes |
 
-Replace the files with the real artwork (keep the names) and run `npm run build`. No code
+To change the artwork, replace these files (keep the names) and run `npm run build`. No code
 changes are needed; each slot is marked with an HTML comment in `frontend/index.html`.
 Colours, fonts and timings are CSS custom properties in `frontend/src/theme.css`.
 
@@ -302,7 +305,7 @@ backend/spherex_viewer/
 frontend/src/            state.ts (URL schema + hash store), coords.ts, api.ts, player.ts (canvas,
                          timeline), plots.ts (canvas plots), motion.ts (motion-fit plot), sphere-math.ts + sphere.ts (Three.js,
                          lazy), aladin.ts (Aladin Lite v3, lazy), theme.css, app.css, main.ts
-frontend/assets/         logo.svg, symbol.svg, sky/*.jpg (static sky textures)
+frontend/assets/         logo.svg, logo-light.svg, symbol.svg, sky/*.jpg (static sky textures)
 shared/coords_cases.json coordinate cases run by both the Python and the TypeScript tests
 ```
 

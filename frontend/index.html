@@ -24,9 +24,9 @@
 <!-- ============================== TITLE SCREEN ============================== -->
 <!-- Covers the app on every open until dismissed (click, Enter or any key). Not shown in ?embed=1. -->
 <div id="title" role="dialog" aria-modal="true" aria-labelledby="titlename">
-  <!-- SYMBOL SLOT: frontend/assets/symbol.svg. Replace the file; no code changes. -->
-  <img src="assets/symbol.svg" alt="" width="128" height="128">
-  <h1 id="titlename">Talasuri</h1>
+  <div class="titlesky" aria-hidden="true" style="background-image: url(assets/title-sky.jpg)"></div>
+  <!-- LOGO SLOT (title screen): frontend/assets/logo.svg, the full logo. Replace the file; no code changes. -->
+  <h1 id="titlename"><img src="assets/logo.svg" alt="Talasuri" width="812" height="236"></h1>
   <p>SPHEREx flipbook and sky explorer</p>
   <button id="titleenter" type="button" class="primary" autofocus>Enter</button>
   <!-- language: saved per browser; the page reloads in the chosen language -->
@@ -34,9 +34,12 @@
     <button type="button" data-lang="en" aria-pressed="true" lang="en">English</button>
     <button type="button" data-lang="fil" aria-pressed="false" lang="fil">Filipino</button>
   </div>
+  <p class="titlecredit">Background: the SPHEREx all-sky map at 2.2 µm, around the centre of the Milky Way (NASA/JPL-Caltech/IPAC)</p>
 </div>
 <script>if (new URLSearchParams(location.search).get("embed") === "1") document.getElementById("title").remove();</script>
 
+<!-- the title screen's sky, heavily blurred, behind the whole app (pre-blurred file: no filter cost) -->
+<div id="appsky" aria-hidden="true" style="background-image: url(assets/app-sky.jpg)"></div>
 <header id="top">
   <a class="brand" href="./" aria-label="Talasuri home">
     <!-- LOGO SLOT (wordmark): frontend/assets/logo.svg. Replace the file; no code changes. -->

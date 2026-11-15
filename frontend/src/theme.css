@@ -97,7 +97,7 @@ button[aria-pressed="true"] { background: var(--red-wash); border-color: var(--r
 ::-webkit-scrollbar-track { background: transparent; }
 
 /* panels: flat, separated from the ground by a hairline only */
-.panel { position: relative; background: var(--ink-2); }
+.panel { position: relative; background: rgba(17, 29, 49, .86); }   /* --ink-2, letting the blurred sky (#appsky) through */
 
 /* collapsible section */
 details.sec { border-top: 1px solid var(--ink-4); }

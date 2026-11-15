@@ -213,7 +213,7 @@ A cold, low-chroma chart navy ramp with chalk text, one warm red for action, and
 **Character:** An atlas engraver's italic for the names of things, a plain public-service sans for the interface, and an instrument mono for every measurement.
 
 ### Hierarchy
-- **Plate** (Source Serif 4 italic 500, 2rem, 1.05, -0.01em): the target name on the atlas-plate label; drops to 2rem under 900px. The title screen sets the product name in the same face at clamp(40px, 9vw, 72px). Example-target names in Help use it at 1rem.
+- **Plate** (Source Serif 4 italic 500, 2rem, 1.05, -0.01em): the target name on the atlas-plate label; drops to 2rem under 900px. The title screen shows the full logo (frontend/assets/logo.svg) over a dimmed crop of the real SPHEREx all-sky map around the Galactic centre (greyscale, untinted, under a chart-navy veil darkest behind the logo and a faint 120px graticule), with a credit line at the bottom left; the map settles in once (3.2s scale 1.06 to 1, off under reduced motion). Behind the rest of the app the same map sits pre-blurred to a soft glow (frontend/assets/app-sky.jpg, 480x300, fixed, 65% opacity); the header and rail (ink-0 at 78%), the panels (ink-2 at 86%) and the viewport ground (ink-1 at 50%) let it through, while the science stage and the phone sheets stay opaque. Example-target names in Help use it at 1rem.
 - **Headline** (Public Sans 600, 1rem): panel and dialog headings, state-card heads.
 - **Title** (Public Sans 500 to 600, 0.875rem): section summaries, plot titles, buttons.
 - **Body** (Public Sans 400, 0.875rem, 1.45): the default; Help body runs at 1.6 line height in two 340px-min columns.
