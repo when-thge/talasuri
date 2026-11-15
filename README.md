@@ -1,4 +1,9 @@
-# Talasuri
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="frontend/assets/logo.svg">
+    <img src="frontend/assets/logo-light.svg" alt="Talasuri" width="406">
+  </picture>
+</h1>
 
 *Tagalog* tala, "star", + suri, "to examine".
 
