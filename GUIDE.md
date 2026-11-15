@@ -193,3 +193,5 @@ Every setting is saved in the page address, so copying the URL shares exactly yo
 | "Could not resolve" a name | Check the spelling, or type the coordinates instead. |
 | Some frames failed | Click **Retry failed** in the header. |
 | The page does not open at all | Check that the server is still running in the terminal, and that you opened the right address (port 8000). |
+| "address already in use" when starting the server | Another copy of the server is already running. Stop it with `Ctrl+C` in its terminal, or start this one on another port (`--port 8001`) and open that port instead. |
+| "bad interpreter" when starting the server | The project folder was moved or renamed after `.venv` was created. Recreate it with `python -m venv --clear .venv`, then repeat the `pip install` line from step 2. |
