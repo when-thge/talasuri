@@ -29,6 +29,24 @@
         ],
         "createdAt": "2026-11-15T06:59:57.923Z",
         "reason": "user confirmed: picked 'Richer navy depth' with a faint chart grid behind the viewport (a chart surface) on 2026-11-15"
+      },
+      {
+        "rule": "buried-raster",
+        "value": "*",
+        "files": [
+          "docs/slides/index.html"
+        ],
+        "createdAt": "2026-11-15T13:10:20.548Z",
+        "reason": "agent: slide 4 flipbook's second frame sits at opacity 0 until the blink toggles it; it is shown every 700ms"
+      },
+      {
+        "rule": "radial-halo",
+        "value": "*",
+        "files": [
+          "docs/slides/index.html"
+        ],
+        "createdAt": "2026-11-15T13:10:20.568Z",
+        "reason": "agent: slide 1 reuses the app's own title-screen veil verbatim (frontend/src/app.css #title::after), navy darkening behind the logo, not a chromatic glow"
       }
     ]
   }

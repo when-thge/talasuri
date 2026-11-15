@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talasuri demo</title>
+<meta name="description" content="Seven-slide demo of Talasuri, the SPHEREx flipbook and sky explorer.">
+<link rel="icon" type="image/svg+xml" href="../../frontend/assets/symbol.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --ink-0: #0a1220; --ink-1: #0d1626; --ink-2: #111d31; --ink-3: #17253d; --ink-4: #22314a; --ink-5: #3a4b66;
+  --stage: #000;
+  --text: #e9eef5; --text-2: #a9b6c9; --text-3: #8a98ae;
+  --red: #ff5a4e; --red-strong: #ff7468; --red-ink: #1a0c0a; --red-wash: rgba(255, 90, 78, .14);
+  --amber: #f2b544;
+  --series-0: #4f79b8; --series-1: #8fb3e8; --series-2: #e9eef5;
+  --d1: #a78bfa; --d2: #60a5fa; --d3: #4de3ff; --d4: #5eead4; --d5: #ffb547; --d6: #ff7a59;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-name: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --slow: 240ms;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--ink-0); color: var(--text); font: 400 16px/1.45 var(--font-body); overflow: hidden;
+  -webkit-font-smoothing: antialiased; }
+::selection { background: var(--red-wash); color: var(--text); }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.mono, table, .figs { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.name { font-family: var(--font-name); font-style: italic; font-weight: 500; letter-spacing: -0.015em; }
+
+/* the deck: a fixed 1600x900 plate scaled to the window */
+#deck { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: 0 0;
+  background: var(--ink-1); }
+.slide { position: absolute; inset: 0; padding: 56px 80px 84px; opacity: 0; visibility: hidden;
+  transition: opacity var(--slow) var(--ease), visibility 0s linear var(--slow); }
+.slide.on { opacity: 1; visibility: visible; transition: opacity var(--slow) var(--ease); }
+@media (prefers-reduced-motion: reduce) { .slide, .slide.on { transition: none; } }
+
+/* the app's soft sky behind the workspace */
+#deck::before, #deck::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+#deck::before { background: url(../../frontend/assets/app-sky.jpg) center / cover; opacity: .65; }
+#deck::after { background: rgba(13, 22, 38, .6); }
+.slide { z-index: 1; }
+
+/* atlas-plate label: subject on top, catalogue line beneath, closed by a hairline */
+.plate { padding-bottom: 20px; margin-bottom: 32px; border-bottom: 1px solid var(--ink-4); }
+.plate h2 { margin: 0; font: 600 40px/1.15 var(--font-body); letter-spacing: -0.01em; max-width: 34ch; text-wrap: balance; }
+.plate h2 .name { font-size: 1.15em; font-weight: 500; }
+.cat { display: flex; flex-wrap: wrap; gap: 6px 32px; margin: 14px 0 0; font-size: 17px; color: var(--text-3); }
+.cat b { font: 500 17px var(--font-body); color: var(--text); margin-left: 8px; }
+.cat b.n, .cat .mono { font: 400 17px var(--font-mono); font-variant-numeric: tabular-nums; }
+.cat .mono { font-weight: 400; }
+p { margin: 0; }
+.lede { font-size: 22px; line-height: 1.5; color: var(--text-2); max-width: 46ch; }
+.hint { font-size: 16px; line-height: 1.5; color: var(--text-3); }
+
+/* chart neat-line, as on every sky view in the app */
+.frame { background: var(--stage); border-radius: 2px; box-shadow: 0 0 0 1px var(--ink-5), 0 0 0 5px var(--ink-1), 0 0 0 6px var(--ink-4); }
+.frame img { display: block; width: 100%; height: auto; }
+.shot { display: block; width: 100%; height: auto; border-radius: 2px; }
+figure { margin: 0; }
+figcaption { margin-top: 14px; font-size: 15px; color: var(--text-3); }
+figcaption .mono { color: var(--text-2); }
+
+.grid { display: grid; gap: 56px; align-items: start; }
+/* captions and notes cross the sky band: one step brighter than text-3 keeps them at 4.5:1 */
+figcaption, .credits, td.obj small { color: var(--text-2); }
+
+/* deck furniture */
+#foot { position: fixed; z-index: 5; display: flex; align-items: center; gap: 10px; }
+#bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink-4); z-index: 4; }
+#barfill { height: 100%; width: 0; background: var(--text-2); transition: width var(--slow) var(--ease); }
+.counter { font: 400 15px var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text-3); min-width: 4.5ch; text-align: right; }
+.counter b { color: var(--text); font-weight: 400; }
+button { font: 500 14px var(--font-body); color: var(--text); background: var(--ink-2); border: 1px solid var(--ink-4);
+  border-radius: 6px; padding: 6px 12px; cursor: pointer;
+  transition: border-color 150ms, background-color 150ms, color 150ms; }
+button:hover { background: var(--ink-3); border-color: var(--ink-5); }
+button:active { background: var(--ink-4); }
+button.icon { width: 36px; height: 34px; padding: 0; display: inline-grid; place-items: center; }
+button.primary { background: var(--red); border-color: var(--red); color: var(--red-ink); font-weight: 600; }
+button.primary:hover { background: var(--red-strong); border-color: var(--red-strong); }
+button:disabled { opacity: .4; cursor: default; }
+#deck .footmark { position: absolute; left: 80px; bottom: 32px; display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: var(--text-3); z-index: 3; }
+#deck .footmark img { width: 22px; height: 22px; border-radius: 4px; }
+
+/* ---- 1 title: the app's title screen ---- */
+#s1 { padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 16px;
+  background: var(--ink-1); }
+#s1 .sky, #s1::after { position: absolute; inset: 0; pointer-events: none; }
+#s1 .sky { background: url(../../frontend/assets/title-sky.jpg) 72% 70% / cover no-repeat; opacity: .62; }
+#s1.on .sky { animation: settle 3.2s var(--ease) both; }
+@keyframes settle { from { opacity: 0; transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { #s1.on .sky { animation: none; } }
+#s1::after { content: "";
+  background:
+    radial-gradient(ellipse 46% 40% at 50% 46%, rgba(13, 22, 38, .9), rgba(13, 22, 38, .55) 60%, rgba(13, 22, 38, 0) 100%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, rgba(10, 18, 32, 0) 55%, rgba(10, 18, 32, .85) 100%),
+    repeating-linear-gradient(0deg, rgba(169, 182, 201, .05) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(90deg, rgba(169, 182, 201, .05) 0 1px, transparent 1px 120px); }
+#s1 > :not(.sky) { position: relative; z-index: 1; }
+#s1 h1 { margin: 0; line-height: 0; }
+#s1 h1 img { width: 820px; height: auto; }
+#s1 .tag { font-size: 30px; color: var(--text); font-weight: 500; letter-spacing: -0.005em; }
+#s1 .ety { font-size: 20px; color: var(--text-2); }
+#s1 .ety i { font-family: var(--font-name); font-weight: 500; color: var(--text); }
+#s1 .go { margin-top: 26px; display: flex; align-items: center; gap: 14px; font-size: 16px; color: var(--text-2); }
+#s1 .go button { padding: 10px 30px; font-size: 16px; }
+#s1 .credit { position: absolute; left: 32px; bottom: 26px; font-size: 13px; color: var(--text-2); text-shadow: 0 1px 3px rgba(5, 9, 17, .9); }
+
+/* ---- 2 problem ---- */
+#s2 .grid { grid-template-columns: 600px 1fr; }
+.facts { list-style: none; margin: 0; padding: 0; }
+.facts li { padding: 20px 0; border-top: 1px solid var(--ink-4); }
+.facts li:last-child { border-bottom: 1px solid var(--ink-4); }
+.facts h3 { margin: 0 0 6px; font: 600 21px/1.3 var(--font-body); }
+.facts p { font-size: 17px; line-height: 1.5; color: var(--text-2); max-width: 52ch; }
+.bands { background: var(--ink-0); border-radius: 6px; padding: 28px 32px 22px; }
+.bands h3 { margin: 0 0 4px; font: 600 19px var(--font-body); }
+.bands .hint { margin-bottom: 18px; }
+.bands svg { display: block; width: 100%; height: auto; overflow: visible; }
+.bands svg text { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ---- 3 find ---- */
+#s3 .grid { grid-template-columns: 1fr 760px; gap: 64px; }
+.ways { display: flex; flex-direction: column; gap: 28px; }
+.way h3 { margin: 0 0 10px; font: 600 20px var(--font-body); }
+.way .hint { margin-top: 8px; }
+.way .shot { border-radius: 8px; }
+
+/* ---- 4 watch ---- */
+#s4 .grid { grid-template-columns: 500px 1fr; gap: 64px; }
+.flip .frame { position: relative; aspect-ratio: 1284 / 1276; }
+.flip .frame img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.flip .frame img.late { opacity: 0; }
+.flip.late .frame img.late { opacity: 1; }
+.ticks { position: relative; height: 16px; margin: 16px 0 10px; }
+.ticks i { position: absolute; top: 0; width: 4px; height: 16px; margin-left: -2px; border-radius: 1px; background: #9fb0d0; opacity: .6; }
+.ticks i.cur { background: var(--text); opacity: 1; }
+.player { display: flex; align-items: center; gap: 12px; }
+.player .cap { font: 400 15px var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text-2); }
+.player .cap b { color: var(--text); font-weight: 400; }
+.pairs { display: flex; flex-direction: column; gap: 22px; }
+.pairs .lede { max-width: 44ch; }
+.pairs .row { display: flex; gap: 28px; align-items: flex-start; }
+.pairs .row figcaption { margin-top: 0; max-width: 30ch; font-size: 16px; line-height: 1.5; color: var(--text-2); }
+.pairs .row figcaption b { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text); }
+
+/* ---- 5 measure ---- */
+#s5 .grid { grid-template-columns: 760px 1fr; gap: 64px; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th { text-align: left; font: 500 13px var(--font-body); color: var(--text-3); padding: 0 0 10px; }
+td { padding: 12px 0; border-top: 1px solid var(--ink-4); vertical-align: top; color: var(--text); }
+td .sub { display: block; color: var(--text-3); margin-top: 3px; }
+td.obj { font: italic 500 19px var(--font-name); letter-spacing: -0.01em; padding-right: 10px; }
+td.obj small { display: block; font: 400 13px var(--font-body); font-style: normal; color: var(--text-3); margin-top: 2px; }
+.note { margin-top: 22px; font-size: 16px; line-height: 1.5; color: var(--text-2); max-width: 44ch; }
+
+/* ---- 6 hunt ---- */
+#s6 .grid { grid-template-columns: 760px 1fr; gap: 64px; }
+.compare h3 { margin: 0 0 6px; font: 600 20px var(--font-body); }
+.legend { display: flex; gap: 22px; margin: 0 0 16px; font-size: 14px; color: var(--text-2); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; }
+.metric { padding: 12px 0; border-top: 1px solid var(--ink-4); }
+.metric .lbl { font-size: 15px; color: var(--text-2); margin-bottom: 8px; }
+.barrow { display: grid; grid-template-columns: 1fr 64px; align-items: center; gap: 12px; margin-top: 5px; }
+.barrow span { height: 10px; border-radius: 2px; }
+.barrow b { font: 400 16px var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--text); }
+.barrow.base b { color: var(--text-3); }
+.bd { margin-top: 18px; font-size: 16px; line-height: 1.5; color: var(--text-2); }
+.bd .mono { color: var(--text); }
+.limit { display: flex; gap: 10px; margin-top: 18px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+.limit svg { flex: none; margin-top: 3px; color: var(--amber); }
+
+/* ---- 7 share / try ---- */
+#s7 .grid { grid-template-columns: auto auto 1fr; gap: 44px; }
+#s7 .embed { width: 380px; }
+#s7 .phone { width: 208px; }
+.try h3 { margin: 0 0 12px; font: 600 20px var(--font-body); }
+pre { margin: 0 0 10px; padding: 14px 16px; background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 6px;
+  font: 400 15px/1.6 var(--font-mono); color: var(--text); white-space: pre; }
+pre .c { color: var(--text-3); }
+.try ul { margin: 0; padding: 0; list-style: none; }
+.try li { padding: 9px 0; border-top: 1px solid var(--ink-4); font-size: 16px; line-height: 1.45; color: var(--text-2); }
+.try li b { color: var(--text); font-weight: 600; }
+.credits { margin-top: 18px; font-size: 13px; line-height: 1.55; color: var(--text-3); max-width: 62ch; }
+</style>
+</head>
+<body>
+<div id="deck" role="region" aria-roledescription="slide deck" aria-label="Talasuri demo">
+
+  <!-- 1 -->
+  <section class="slide" id="s1" aria-roledescription="slide" aria-label="1 of 7: Talasuri">
+    <div class="sky" aria-hidden="true"></div>
+    <h1><img src="../../frontend/assets/logo.svg" alt="Talasuri" width="812" height="236"></h1>
+    <p class="tag">Every SPHEREx infrared image of any spot on the sky, as a flipbook.</p>
+    <p class="ety">Tagalog <i>tala</i>, star, + <i>suri</i>, to examine</p>
+    <div class="go"><button class="primary" type="button" data-next>Start the demo</button><span>or press →</span></div>
+    <p class="credit">Background: the SPHEREx all-sky map at 2.2 µm, around the centre of the Milky Way (NASA/JPL-Caltech/IPAC)</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide" id="s2" aria-roledescription="slide" aria-label="2 of 7: The problem">
+    <div class="plate">
+      <h2>SPHEREx maps the whole sky in 102 colours. Looking at it takes code.</h2>
+      <p class="cat"><span>Plate <span class="mono">2/7</span><b>Problem</b></span><span>Wavelengths<b class="n">0.75–5.0 µm</b></span><span>Coverage<b>whole sky, about twice a year</b></span><span>Archive<b>NASA/IPAC IRSA</b></span></p>
+    </div>
+    <div class="grid">
+      <ul class="facts">
+        <li><h3>Scattered across files</h3><p>One spot on the sky sits in hundreds of exposures, each a large FITS file with its own orientation and pixel grid.</p></li>
+        <li><h3>Every frame is a different colour</h3><p>The filters change across each detector, so a star brightens and fades between frames even when nothing about it changes.</p></li>
+        <li><h3>Big pixels</h3><p>At 6.15″ per pixel, a nearby star's motion takes months to show. It only appears when many visits are lined up.</p></li>
+        <li><h3>No WiseView for SPHEREx</h3><p>Backyard Worlds found cold brown dwarfs by blinking WISE images. Nothing like it existed for SPHEREx.</p></li>
+      </ul>
+      <div class="bands" role="img" aria-label="The six SPHEREx detectors and their wavelength ranges, from 0.75 to 5.01 micrometres">
+        <h3>Six detectors, one sky</h3>
+        <p class="hint">Each detector covers its own slice of the infrared, read across the frame by a linear variable filter.</p>
+        <svg viewBox="0 0 640 340" aria-hidden="true">
+          <!-- x: 0.6 um -> 20, 5.2 um -> 620 ; 130.43 px per um -->
+          <g stroke="#22314a" stroke-width="1">
+            <line x1="20" y1="300" x2="620" y2="300" stroke="#3a4b66"/>
+            <line x1="72.2" y1="18" x2="72.2" y2="300"/><line x1="137.4" y1="18" x2="137.4" y2="300"/>
+            <line x1="267.8" y1="18" x2="267.8" y2="300"/><line x1="398.3" y1="18" x2="398.3" y2="300"/>
+            <line x1="528.7" y1="18" x2="528.7" y2="300"/>
+          </g>
+          <g font-size="13" fill="#8a98ae" text-anchor="middle">
+            <text x="72.2" y="322">1</text><text x="137.4" y="322">1.5</text><text x="267.8" y="322">2.5</text>
+            <text x="398.3" y="322">3.5</text><text x="528.7" y="322">4.5</text>
+            <text x="610" y="322" text-anchor="end">µm</text>
+          </g>
+          <!-- detector bands from IRSA's SIA em_min/em_max -->
+          <g font-size="14">
+            <rect x="38.98" y="34" width="48.42" height="22" rx="3" fill="#a78bfa"/>
+            <text x="96" y="50" fill="#e9eef5">D1  0.75–1.12</text>
+            <rect x="85.65" y="80" width="71.29" height="22" rx="3" fill="#60a5fa"/>
+            <text x="166" y="96" fill="#e9eef5">D2  1.10–1.65</text>
+            <rect x="154.36" y="126" width="104.93" height="22" rx="3" fill="#4de3ff"/>
+            <text x="268" y="142" fill="#e9eef5">D3  1.63–2.43</text>
+            <rect x="255.13" y="172" width="188.42" height="22" rx="3" fill="#5eead4"/>
+            <text x="452" y="188" fill="#e9eef5">D4  2.40–3.85</text>
+            <rect x="438.85" y="218" width="80.70" height="22" rx="3" fill="#ffb547"/>
+            <text x="430" y="234" fill="#e9eef5" text-anchor="end">D5  3.81–4.43</text>
+            <rect x="517.14" y="264" width="78.01" height="22" rx="3" fill="#ff7a59"/>
+            <text x="509" y="280" fill="#e9eef5" text-anchor="end">D6  4.41–5.01</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide" id="s3" aria-roledescription="slide" aria-label="3 of 7: Find a target">
+    <div class="plate">
+      <h2>Find a target three ways, and <span class="name">Talasuri</span> gathers every exposure of it.</h2>
+      <p class="cat"><span>Plate <span class="mono">3/7</span><b>Find</b></span><span>Names<b>SIMBAD + Sesame</b></span><span>Images<b>IRSA image search + S3 byte ranges</b></span><span>First frames<b>in about 10 s</b></span></p>
+    </div>
+    <div class="grid">
+      <div class="ways">
+        <figure class="way">
+          <h3>Type a name</h3>
+          <img class="shot" src="img/find_search.png" alt="The app's search box with Barnard typed and SIMBAD suggestions listed: Barnard's Galaxy, Barnard Star, Barnard Loop and more" width="1041" height="666">
+          <figcaption>Suggestions come from SIMBAD as you type; known movers switch on motion tracking.</figcaption>
+        </figure>
+        <div class="way">
+          <h3>Or type coordinates</h3>
+          <p class="hint">Decimal degrees or sexagesimal, such as <span class="mono">08:55:10.8 −07:14:43</span>.</p>
+        </div>
+      </div>
+      <figure>
+        <img class="shot frame" src="../screenshots/talasuri_sphere_pick.png" alt="The Sky Sphere on its SPHEREx layer with a position picked near the Orion Nebula and a Load frames here bar" width="1600" height="1000">
+        <figcaption>Or click the sky: the Orion Nebula picked on the Sky Sphere's SPHEREx layer, ready for Load frames here.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide" id="s4" aria-roledescription="slide" aria-label="4 of 7: Watch it move">
+    <div class="plate">
+      <h2><span class="name">WISE 0855−0714</span>, the coldest known brown dwarf</h2>
+      <p class="cat"><span>Plate <span class="mono">4/7</span><b>Watch</b></span><span>RA<b class="n">08:55:10.8</b></span><span>Dec<b class="n">−07:14:43</b></span><span>μ<b class="n">−8123.7, 673.2 mas/yr</b></span><span>Field<b class="n">5′</b></span><span>Frames<b class="n">258</b></span></p>
+    </div>
+    <div class="grid">
+      <div class="flip" id="flip">
+        <div class="frame">
+          <img src="img/watch_first.png" alt="SPHEREx detectors 5 and 6, first visit, 5 May 2025, centred on WISE 0855-0714" width="1284" height="1276">
+          <img class="late" src="img/watch_last.png" alt="The same field at the last visit, 21 April 2026" width="1284" height="1276">
+        </div>
+        <div class="ticks" aria-hidden="true"><i style="left:2%"></i><i style="left:50%"></i><i style="left:98%"></i></div>
+        <div class="player">
+          <button class="icon primary" type="button" id="play" aria-pressed="false" aria-label="Play the flipbook">
+            <svg class="i-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2.8l8.5 5.2L5 13.2z"/></svg>
+            <svg class="i-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" hidden><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg>
+          </button>
+          <span class="cap" id="flipcap" aria-live="polite"><b>1/3</b> · 2025-05-05 · D5 D6 · 4.04–5.00 µm</span>
+        </div>
+      </div>
+      <div class="pairs">
+        <p class="lede">All 258 exposures land on one north-up grid and play in time order. Motion tracking keeps the brown dwarf in the ring.</p>
+        <div class="row">
+          <figure class="frame" style="width:400px"><img src="img/watch_diff.png" alt="Difference image, last visit minus first: background stars show as dark and bright pairs" width="1284" height="1276"></figure>
+          <figcaption><b>Last visit minus first</b>Subtracting a reference turns change into pairs: dark where a star was, bright where it is. Here the field slides past a target moving about 8.2″ a year.</figcaption>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide" id="s5" aria-roledescription="slide" aria-label="5 of 7: Measure it">
+    <div class="plate">
+      <h2>Spectrum, light curve and a motion fit, one panel away.</h2>
+      <p class="cat"><span>Plate <span class="mono">5/7</span><b>Measure</b></span><span>Photometry<b>forced aperture, native pixels</b></span><span>Motion<b>WISE + NEOWISE, 2010–2024</b></span></p>
+    </div>
+    <div class="grid">
+      <figure>
+        <img class="shot frame" src="../screenshots/talasuri_flipbook.png" alt="The Characteristics tab: settings rail and stack options on the left, the WISE 0855-0714 flipbook in the centre, spectrum and light curve on the right" width="1600" height="1000">
+        <figcaption>Characteristics tab: settings on the left, the image in the middle, measurements on the right.</figcaption>
+      </figure>
+      <div>
+        <table aria-label="WISE motion fit against SIMBAD's published values">
+          <thead><tr><th>Object</th><th>Fitted μ, mas/yr</th><th>SIMBAD</th></tr></thead>
+          <tbody>
+            <tr><td class="obj">WISE 0855−0714</td><td>−8132.9 ± 9.1<span class="sub">+681.7 ± 10.4</span></td><td>−8123.7<span class="sub">+673.2</span></td></tr>
+            <tr><td class="obj">Barnard's Star<small>saturated</small></td><td>−787.6 ± 14.3<span class="sub">+10375.2 ± 10.7</span></td><td>−801.6<span class="sub">+10362.4</span></td></tr>
+            <tr><td class="obj">ε Indi B<small>close binary</small></td><td>+3990.1 ± 3.5<span class="sub">−2514.0 ± 3.4</span></td><td>+3982.0<span class="sub">−2466.8</span></td></tr>
+          </tbody>
+        </table>
+        <p class="note">A physical model, not machine learning: weighted least squares over ten years of WISE detections, drawn on each frame with its 95% ellipse. In simulation the true position falls inside that ellipse about 95% of the time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide" id="s6" aria-roledescription="slide" aria-label="6 of 7: Hunt for movers">
+    <div class="plate">
+      <h2>The Movement Classifier ranks which faint motions are real.</h2>
+      <p class="cat"><span>Plate <span class="mono">6/7</span><b>Hunt</b></span><span>Training<b>162,029 Gaia-labelled sources, 150 fields</b></span><span>Plus<b>1,707 brown-dwarf entries</b></span><span>Model<b>gradient-boosted trees</b></span></p>
+    </div>
+    <div class="grid">
+      <figure>
+        <img class="shot frame" src="img/hunt.png" alt="Movement Classifier tab on WISE 0855-0714: CatWISE candidates ringed on the image and listed with their probability of moving" width="1600" height="1000">
+        <figcaption>Candidates ringed on the image; four of the five have no Gaia star.</figcaption>
+      </figure>
+      <div class="compare">
+        <h3>Whole fields held out, 5-fold</h3>
+        <div class="legend"><span><i style="background:var(--series-2)"></i>Classifier</span><span><i style="background:var(--series-0)"></i>CatWISE motion S/N alone</span></div>
+        <div class="metric"><p class="lbl">Precision at P ≥ 0.5</p>
+          <div class="barrow"><span style="width:84%;background:var(--series-2)"></span><b>84%</b></div>
+          <div class="barrow base"><span style="width:62%;background:var(--series-0)"></span><b>62%</b></div></div>
+        <div class="metric"><p class="lbl">Recall</p>
+          <div class="barrow"><span style="width:65%;background:var(--series-2)"></span><b>65%</b></div>
+          <div class="barrow base"><span style="width:48%;background:var(--series-0)"></span><b>48%</b></div></div>
+        <div class="metric"><p class="lbl">ROC AUC</p>
+          <div class="barrow"><span style="width:97.3%;background:var(--series-2)"></span><b>0.973</b></div>
+          <div class="barrow base"><span style="width:87.5%;background:var(--series-0)"></span><b>0.875</b></div></div>
+        <p class="bd">Held-out brown dwarfs flagged <span class="mono">93%</span> of the time (<span class="mono">89%</span> with no Gaia star). <span class="name">WISE 0855−0714</span> scores <span class="mono">P = 0.98</span>.</p>
+        <p class="limit"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2 15 14H1z"/><path d="M8 6.5v3.5M8 12v.01"/></svg><span>A high probability is a reason to look, not a discovery: precision without a Gaia star cannot be measured, and training stayed at |b| ≥ 15°.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide" id="s7" aria-roledescription="slide" aria-label="7 of 7: Share it and try it">
+    <div class="plate">
+      <h2>Share the exact view, embed it, use it in Filipino.</h2>
+      <p class="cat"><span>Plate <span class="mono">7/7</span><b>Share</b></span><span>State<b>all in the URL</b></span><span>Embed<b class="n">?embed=1</b></span><span>Languages<b>English, Filipino</b></span></p>
+    </div>
+    <div class="grid">
+      <figure class="embed">
+        <img class="shot frame" src="../screenshots/talasuri_embed.png" alt="The compact embed player: the flipbook with play controls and the Talasuri symbol" width="640" height="720">
+        <figcaption>Compact player for class pages and articles.</figcaption>
+      </figure>
+      <figure class="phone">
+        <img class="shot frame" src="../screenshots/talasuri_mobile_sheet.png" alt="Talasuri on a phone with the settings bottom sheet open" width="390" height="844">
+        <figcaption>Phones get bottom sheets.</figcaption>
+      </figure>
+      <div class="try">
+        <h3>Run it</h3>
+        <pre><span class="c"># Docker</span>
+docker compose up --build
+<span class="c"># then open</span> http://localhost:8000</pre>
+        <ul>
+          <li><b>Every setting lives in the link</b>, so a teacher can send a view that opens exactly as they left it.</li>
+          <li><b>Filipino throughout</b>, from the title screen's <span class="mono">Pumasok</span> to the Help guide and chart labels.</li>
+          <li><b>Keyboard first:</b> Space plays, arrows step, D differences, S opens the Sky Sphere.</li>
+        </ul>
+        <p class="credits">Data: SPHEREx Spectral Images (NASA/IPAC IRSA), SIMBAD and Sesame (CDS), Gaia DR3 (ESA), CatWISE2020, WISE and NEOWISE, Aladin Lite (CDS). Talasuri is an independent tool, not an official NASA or IRSA product.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="footmark" aria-hidden="true"><img src="../../frontend/assets/symbol.svg" alt=""><span>Talasuri</span></p>
+  <div id="bar" aria-hidden="true"><div id="barfill"></div></div>
+</div>
+
+<nav id="foot" aria-label="Slides">
+  <button class="icon" type="button" id="prev" aria-label="Previous slide"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M10.5 3 4.5 8l6 5z"/></svg></button>
+  <span class="counter" id="counter" aria-live="polite"><b>1</b> / 7</span>
+  <button class="icon" type="button" id="next" aria-label="Next slide"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.5 3l6 5-6 5z"/></svg></button>
+</nav>
+
+<script>
+(() => {
+  const deck = document.getElementById("deck");
+  const slides = [...deck.querySelectorAll(".slide")];
+  const foot = document.getElementById("foot");
+  const counter = document.getElementById("counter");
+  const fill = document.getElementById("barfill");
+  const footmark = deck.querySelector(".footmark");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  let cur = -1, scale = 1;
+
+  function fit() {
+    scale = Math.min(innerWidth / 1600, innerHeight / 900);
+    deck.style.transform = `scale(${scale}) translate(-50%, -50%)`;
+    const r = deck.getBoundingClientRect();
+    if (innerHeight - r.bottom >= 72) {
+      // portrait screens: full-size nav centred under the plate
+      Object.assign(foot.style, { left: "50%", right: "auto", top: `${r.bottom + 20}px`, bottom: "auto",
+        transform: "translateX(-50%)" });
+    } else {
+      // keep the nav inside the plate's bottom-right margin
+      Object.assign(foot.style, { left: "auto", top: "auto", right: `${innerWidth - r.right + 72 * scale}px`,
+        bottom: `${innerHeight - r.bottom + 22 * scale}px`, transform: `scale(${Math.max(scale, .6)})`,
+        transformOrigin: "100% 100%" });
+    }
+  }
+
+  function go(i, push = true) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if (i === cur) return;
+    slides.forEach((s, k) => { s.classList.toggle("on", k === i); s.setAttribute("aria-hidden", k === i ? "false" : "true"); s.inert = k !== i; });
+    cur = i;
+    counter.innerHTML = `<b>${i + 1}</b> / ${slides.length}`;
+    fill.style.width = `${((i + 1) / slides.length) * 100}%`;
+    footmark.style.visibility = i === 0 ? "hidden" : "visible";
+    document.getElementById("prev").disabled = i === 0;
+    document.getElementById("next").disabled = i === slides.length - 1;
+    if (push) history.replaceState(null, "", `#${i + 1}`);
+    flipbook(i === 3 && !reduce.matches);
+  }
+
+  // slide 4: the flipbook blinks between the first and last visit
+  const flip = document.getElementById("flip"), play = document.getElementById("play"), cap = document.getElementById("flipcap");
+  const ticks = flip.querySelectorAll(".ticks i");
+  const FRAMES = [
+    { late: false, tick: 0, cap: "<b>1/3</b> · 2025-05-05 · D5 D6 · 4.04–5.00 µm" },
+    { late: true, tick: 2, cap: "<b>3/3</b> · 2026-04-21 · D5 D6 · 3.83–4.97 µm" },
+  ];
+  let f = 0, timer = null;
+  function show(k) {
+    f = k; flip.classList.toggle("late", FRAMES[k].late); cap.innerHTML = FRAMES[k].cap;
+    ticks.forEach((t, n) => t.classList.toggle("cur", n === FRAMES[k].tick));
+  }
+  function flipbook(on) {
+    clearInterval(timer); timer = null;
+    if (on) timer = setInterval(() => show(1 - f), 700);
+    play.setAttribute("aria-pressed", String(on));
+    play.setAttribute("aria-label", on ? "Pause the flipbook" : "Play the flipbook");
+    play.querySelector(".i-play").hidden = on; play.querySelector(".i-pause").hidden = !on;
+  }
+  play.addEventListener("click", () => flipbook(!timer));
+  show(0);
+
+  document.getElementById("prev").addEventListener("click", () => go(cur - 1));
+  document.getElementById("next").addEventListener("click", () => go(cur + 1));
+  deck.querySelectorAll("[data-next]").forEach((b) => b.addEventListener("click", () => go(cur + 1)));
+  addEventListener("keydown", (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === "Home") go(0);
+    else if (e.key === "End") go(slides.length - 1);
+    else if (e.key === "p" || e.key === "P") { if (cur === 3) flipbook(!timer); }
+  });
+  addEventListener("resize", fit);
+  addEventListener("hashchange", () => go((parseInt(location.hash.slice(1), 10) || 1) - 1, false));
+  fit();
+  go((parseInt(location.hash.slice(1), 10) || 1) - 1, false);
+})();
+</script>
+</body>
+</html>
